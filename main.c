@@ -306,6 +306,7 @@ void student_login(){
     int a;
     printf("Enter a: ");
     scanf("%d", &a);
+    ///test
 }
 // ================== student Login end ==================
 
