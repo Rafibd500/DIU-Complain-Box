@@ -5,11 +5,28 @@
 
 // ======= Function call =======
 
+//For students ===========
 void printCenter();
 int getConsoleWidth();
 void student_login_reg();
 void student_registration();
 void student_login();
+void append_id_password(char id[], char password[]);
+void password_encrypt(char *password);
+void password_decrypt(char *password);
+void load_students_data();
+void upload_students_data();
+void load_logged_student_data();
+void upload_logged_student_data();
+int binary_search_on_students_data(char id[]);
+int binary_search_on_students_login(char id[]);
+void sort_student_login_info();
+
+void student_dashboard();
+
+
+
+
 
 struct Student{
     char log_status[2];
@@ -30,8 +47,7 @@ struct Login_info{
 struct Login_info students_login_info[3000];
 
 int student_cnt;
-int login_student_cnt = 0;
-
+int registered_students = 0;
 
 
 //========== text styling and alignment start ==========
@@ -66,6 +82,18 @@ void printCenter(const char *text, int color)
     printf("%s", text);
     textColor(7); // Reset color
 }
+void printCenterCustom(const char *text, int color)
+{
+    int consoleWidth = getConsoleWidth();
+    int len = strlen(text);
+    // int spacing = (width) / 2 - 15;
+    int spacing = (consoleWidth - len) / 2;
+    textColor(color);
+    for (int i = 0; i < spacing/2; i++)
+        printf(" ");
+    printf("%s", text);
+    textColor(7); // Reset color
+}
 // left text with color
 void printLeft(const char *text, int color)
 {
@@ -87,7 +115,7 @@ void print_project_name(){
             printLeft("*", 11);
 }
 
-// ---------- load data from file ----------
+// ---------- load students data from file ----------
 void load_students_data(){
     student_cnt = 0;  // Reset count before loading
     FILE *fp = fopen("students_data/students.txt", "r");
@@ -112,7 +140,7 @@ void load_students_data(){
         fclose(fp);
 }
 
-// ---------- Upload data from file ----------
+// ---------- Upload students data from file ----------
 void upload_students_data(){
     FILE *fp = fopen("students_data/students.txt", "w");
     for (int j = 0; j < student_cnt; j++) {
@@ -129,19 +157,58 @@ void upload_students_data(){
     fclose(fp);
 }
 
+
+// ---------- load login info from file ----------
+
+void load_logged_student_data(){
+    registered_students = 0;
+    FILE *fp = fopen("registered_students/login_info.txt", "r");
+    if (fp == NULL)
+    {
+        printf("File not found!\n");
+        return;
+    }
+    while (fscanf(fp, "%[^|]|%[^\n]\n",
+        students_login_info[registered_students].id,
+        students_login_info[registered_students].password) != EOF)
+        {
+        registered_students++;
+        
+    }
+
+        fclose(fp);
+}
+
+void upload_logged_student_data(){
+    FILE *fp = fopen("registered_students/login_info.txt", "w");
+    if (fp == NULL){
+        printf("File not found!\n");
+        return;
+    }
+    for (int j = 0; j < registered_students; j++) {
+        fprintf(fp, "%s|%s\n",
+            students_login_info[j].id,
+            students_login_info[j].password);
+    }
+    fclose(fp);
+}
 // ---------- encrypt password ----------
 void password_encrypt(char *password){
     int len = strlen(password);
-    for(int i = 0; i<len; i++){
-        password[i] ^= 5;
-    }
+    for(int i = 0; i<len; i++) password[i] ^= 5;
+}
+
+// ---------- decrypt password ----------
+void password_decrypt(char *password){
+    int len = strlen(password);
+    for(int i = 0; i<len; i++) password[i] ^= 5;
 }
 
 // ---------- binary_search_on_students_data ----------
 int binary_search_on_students_data(char id[]){
     load_students_data();  // Load student data from file
-    int l = 0, r = student_cnt;
-    while(l<r){
+    int l = 0, r = student_cnt-1;
+    while(l<=r){
         int mid = (l+r)/2;
         if(strcmp(students_data[mid].id, id) == 0) return mid;
         else if(strcmp(students_data[mid].id, id) < 0) l = mid+1;
@@ -150,7 +217,23 @@ int binary_search_on_students_data(char id[]){
     return -1;
 }
 
-
+void sort_student_login_info(){
+    load_logged_student_data();
+    int flag = 0;
+    for(int i = 0; i<registered_students-1; i++){
+        flag = 0;
+        for(int j = 0; j<registered_students-i-1; j++){
+            if(strcmp(students_login_info[j].id, students_login_info[j+1].id)>0){
+                struct Login_info tmp = students_login_info[j];
+                students_login_info[j] = students_login_info[j+1];
+                students_login_info[j+1] = tmp;
+                flag = 1;
+            }
+        }
+        if(!flag) break;
+    }
+    upload_logged_student_data();
+}
 
 
 // ================== student registration / Login choice page start ==================
@@ -272,7 +355,9 @@ void student_registration()
             strcpy(students_data[found].log_status, "1");
             upload_students_data();
             Sleep(3000);
+            sort_student_login_info();
             student_login();
+            
         }
     } 
     else {
@@ -286,7 +371,7 @@ void student_registration()
 
 // ================== append student id password to file start ==================
 void append_id_password(char id[], char password[]){
-    password_encrypt(password);
+    password_decrypt(password);
     FILE *fp = fopen("registered_students/login_info.txt", "a");
     if (fp == NULL){
         printf("Error: Could not open login_info.txt\n");
@@ -297,18 +382,75 @@ void append_id_password(char id[], char password[]){
 }
 // ================== append student id password to file start ==================
 
+// ---------- binary_search_on_students_login ----------
+int binary_search_on_students_login(char id[]){
+
+    int l = 0, r = registered_students-1;
+    while(l<=r){
+        int mid = (l+r)/2;
+        if(strcmp(students_login_info[mid].id, id) == 0) return mid;
+        else if(strcmp(students_login_info[mid].id, id) < 0) l = mid+1;
+        else r = mid-1;
+    }
+    return -1;
+}
 
 // ================== student Login start ==================
 void student_login(){
     system("cls");
     print_project_name();
-    printCenter("Login here", 12);
-    int a;
-    printf("Enter a: ");
-    scanf("%d", &a);
-    ///test
+    printCenter("Login\n", 12);
+    printCenter("---------------------------------------------------\n", 9);
+    char id[15], password[20];
+    printLeft("Enter ID: ", 15);
+    scanf("%s", id);
+    printLeft("Enter Password: ", 15);
+    scanf("%s", password);
+    load_logged_student_data();
+    int found1 = binary_search_on_students_login(id);
+    if(found1 != 0){ 
+        if(strcmp(students_login_info[found1].id, id) == 0){
+            char decrypt_pass[20];
+            strcpy(decrypt_pass, students_login_info[found1].password);
+            password_decrypt(decrypt_pass);
+            if(strcmp(decrypt_pass, password) == 0){
+                int found = binary_search_on_students_data(id);
+                printCenterCustom("Welcome, ", 10);
+                textColor(10);
+                printf("%s! Login Successful. Redirecting to Student Dashboard...\n", students_data[found].name, 10);
+                textColor(7); // Reset color
+                Sleep(4000);
+                student_dashboard();
+                return;
+                
+            }
+            else{
+                printCenter("Invalid password", 4);
+                Sleep(3000);
+                student_login_reg();
+                return;
+            }
+        }
+    }
+    
+    printCenter("ID not found", 4);
+    Sleep(300000);
 }
 // ================== student Login end ==================
+
+void student_dashboard(){
+    system("clear");
+    print_project_name();
+    printCenter("--------------Student Dashboard.------------", 10);
+    Sleep(5000);
+    return;
+}
+
+
+
+
+
+
 
 
 
