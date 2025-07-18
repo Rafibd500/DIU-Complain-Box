@@ -1,0 +1,3 @@
+password encyption((Maybe xor))
+login
+student dashboard
