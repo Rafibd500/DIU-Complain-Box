@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <conio.h>
 
 // ======= Function call =======
 
@@ -22,8 +23,13 @@ int binary_search_on_students_data(char id[]);
 int binary_search_on_students_login(char id[]);
 void sort_student_login_info();
 
-void student_dashboard();
-
+void student_dashboard(char id[]);
+void submit_new_complain(char id[]);
+void view_my_complain(char id[]);
+void submit_annonymus_complain(char id[]);
+void track_complain_by_complainID();
+void my_profile(char id[]);
+void student_logout(char id[]);
 
 
 
@@ -420,7 +426,7 @@ void student_login(){
                 printf("%s! Login Successful. Redirecting to Student Dashboard...\n", students_data[found].name, 10);
                 textColor(7); // Reset color
                 Sleep(4000);
-                student_dashboard();
+                student_dashboard(id);
                 return;
                 
             }
@@ -438,13 +444,106 @@ void student_login(){
 }
 // ================== student Login end ==================
 
-void student_dashboard(){
-    system("clear");
+
+
+
+void submit_new_complain(char id[]){
+    system("cls");
     print_project_name();
-    printCenter("--------------Student Dashboard.------------", 10);
+    printCenter("Submit a New Complain\n", 10);
+    printCenter("---------------------------------------------------\n", 9);
+    printf("Press any key....\n");
+    _getch();
+}
+void submit_annonymus_complain(char id[]){
+    system("cls");
+    print_project_name();
+    printCenter("Submit an Annonymus Complain\n", 10);
+    printCenter("---------------------------------------------------\n", 9);
+    printf("Press any key....\n");
+    _getch();
+}
+void view_my_complain(char id[]){
+    system("cls");
+    print_project_name();
+    printCenter("View My Complains\n", 10);
+    printCenter("---------------------------------------------------\n", 9);
+    printf("Press any key....\n");
+    _getch();
+}
+void track_complain_by_complainID(){
+    system("cls");
+    print_project_name();
+    printCenter("Track Complain by Complain ID\n", 10);
+    printCenter("---------------------------------------------------\n", 9);
+    printf("Press any key....\n");
+    _getch();
+}
+void my_profile(char id[]){
+    system("cls");
+    print_project_name();
+    printCenter("My Profile\n", 10);
+    printCenter("---------------------------------------------------\n", 9);
+    printf("Press any key....\n");
+    _getch();
+}
+void student_logout(char id[]){
+    system("cls");
+    print_project_name();
+    printCenter("Logout\n", 10);
+    printCenter("---------------------------------------------------\n", 9);
+    printf("Press any key....\n");
+    _getch();
+}
+
+
+// ================== student dashboard start ==================
+void student_dashboard(char id[]){
+    system("cls");
+    print_project_name();
+    printCenter("Student Dashboard\n", 10);
+    printCenter("---------------------------------------------------\n", 9);
+    int choice;
+    do{
+        
+        printCenter("1. Submit a New Complain     \n", 11);
+        printCenter("   2. Submit an Annonymus Complain\n", 11);
+        printCenter("3. View My Complains        \n", 11);
+        printCenter("    4. Track Complain By Complain ID\n", 11);
+        printCenter("5. My Profile                \n", 11);
+        printCenter("6. Logout                   \n", 11);
+        printLeft("Enter Your Choice: ", 2);
+        scanf("%d", &choice);
+        
+        switch (choice){
+        case 1:
+            submit_new_complain(id);
+            break;
+        case 2:
+            submit_annonymus_complain(id);
+            break;
+        case 3:
+            view_my_complain(id);
+            break;
+        case 4:
+            track_complain_by_complainID();
+            break;
+        case 5:
+            my_profile(id);
+            break;
+        case 6:
+            student_logout(id);
+            break;
+        default:
+            printCenter("Invalid choice. Try again\n", 12);
+            break;
+        }
+
+    }while(choice != 0);
     Sleep(5000);
     return;
 }
+// ================== student dashboard end ==================
 
 
 
@@ -457,10 +556,24 @@ void student_dashboard(){
 // ========== Main function start ==========
 int main()
 {
-    system("cls");
+     system("cls");
+
+    int student_logged = 1;
+    if(student_logged){
+        // ========== DEV MODE START ==========
+        // Uncomment this block to directly test student dashboard
+        
+        char test_student_id[] = "242-35-001";
+        student_dashboard(test_student_id);
+        return 0;
+        
+        // ========== DEV MODE END ==========
+    }
+    // system("cls");
     int choice;
     do
     {
+        
         system("cls");
         print_project_name();
         printCenter("1. Student Login\n", 3);
