@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <windows.h>
 #include <conio.h>
 
@@ -45,7 +46,6 @@ struct Student{
     char dob[15];
 };
 struct Student students_data[3000];
-
 struct Login_info{
     char id[15];
     char password[20];
@@ -55,6 +55,13 @@ struct Login_info students_login_info[3000];
 int student_cnt;
 int registered_students = 0;
 
+
+// structure for complain 
+struct Complain{
+    char cmpID[20];
+    char cmpTitle[500];
+    char cmpDescription[500];
+};
 
 //========== text styling and alignment start ==========
 void textColor(int colorCode) {
@@ -209,6 +216,23 @@ void password_decrypt(char *password){
     int len = strlen(password);
     for(int i = 0; i<len; i++) password[i] ^= 5;
 }
+// ---------- hide password ----------
+void input_hidden_password(char password[]) {
+    char ch;
+    int i = 0;
+    while ((ch = getch()) != 13) { // 13 enter key
+        if (ch == 8 && i > 0) { // backspace
+            printf("\b \b");
+            i--;
+        }
+        else if (ch != 8 && i < 19) { 
+            password[i++]=ch;
+            printf("*");
+        }
+    }
+    password[i] = '\0'; // Null-terminate string
+    printf("\n");
+}
 
 // ---------- binary_search_on_students_data ----------
 int binary_search_on_students_data(char id[]){
@@ -223,6 +247,19 @@ int binary_search_on_students_data(char id[]){
     return -1;
 }
 
+// ---------- binary_search_on_students_login ----------
+int binary_search_on_students_login(char id[]){
+
+    int l = 0, r = registered_students-1;
+    while(l<=r){
+        int mid = (l+r)/2;
+        if(strcmp(students_login_info[mid].id, id) == 0) return mid;
+        else if(strcmp(students_login_info[mid].id, id) < 0) l = mid+1;
+        else r = mid-1;
+    }
+    return -1;
+}
+// ---------- sort_student_login_info ----------
 void sort_student_login_info(){
     load_logged_student_data();
     int flag = 0;
@@ -291,7 +328,7 @@ void student_registration()
     int found = binary_search_on_students_data(id);
     
     if (found != -1 && strcmp(students_data[found].log_status, "1") == 0) {
-        printCenter("You already have an account. Please login\n", 4);
+        printCenter("You already have an account. Please login...\n", 4);
         Sleep(3000);
         student_login();
         return;
@@ -318,7 +355,7 @@ void student_registration()
             while(1){
                 int valid = 1, upper = 0, lower = 0, special = 0, digit = 0;
                 printLeft("Enter password: ", 11);
-                scanf("%s", password);
+                input_hidden_password(password);
                 if(strlen(password) < 8){
                     printf("\033[5;31mThe password must contains 8 character.\033[0m\n");
                     continue;
@@ -345,10 +382,26 @@ void student_registration()
             printLeft("Enter ID: ", 10);
             printf("%s\n", id);
             printLeft("Enter password: ", 11);
-            printf("%s\n", password);
+            int sz = strlen(password);
+            for(int i = 0; i<sz; i++){
+                printf("*");
+            }
+            printf("\n");
+            bool flag = false; //password hide status
             while(1){
+                if(!flag){
+                    getchar();
+                    printLeft("Show Password?(y/n): ", 11);
+                    char ch;
+                    scanf("%c", &ch);
+                    if(ch == 'y') {
+                        printLeft("Enter password: ", 11);
+                        printf("%s\n", password);
+                        flag = true;
+                    }
+                }
                 printLeft("Repeat Password: ", 11);
-                scanf("%s", password2);
+                input_hidden_password(password2);
                 if(strcmp(password, password2) == 0){
                     break;
                 }
@@ -386,20 +439,7 @@ void append_id_password(char id[], char password[]){
     fprintf(fp, "%s|%s\n", id, password);
     fclose(fp);
 }
-// ================== append student id password to file start ==================
-
-// ---------- binary_search_on_students_login ----------
-int binary_search_on_students_login(char id[]){
-
-    int l = 0, r = registered_students-1;
-    while(l<=r){
-        int mid = (l+r)/2;
-        if(strcmp(students_login_info[mid].id, id) == 0) return mid;
-        else if(strcmp(students_login_info[mid].id, id) < 0) l = mid+1;
-        else r = mid-1;
-    }
-    return -1;
-}
+// ================== append student id password to file end ==================
 
 // ================== student Login start ==================
 void student_login(){
@@ -452,7 +492,7 @@ void submit_new_complain(char id[]){
     print_project_name();
     printCenter("Submit a New Complain\n", 10);
     printCenter("---------------------------------------------------\n", 9);
-    printf("Press any key....\n");
+    printf("Press any key....");
     _getch();
 }
 void submit_annonymus_complain(char id[]){
@@ -460,7 +500,7 @@ void submit_annonymus_complain(char id[]){
     print_project_name();
     printCenter("Submit an Annonymus Complain\n", 10);
     printCenter("---------------------------------------------------\n", 9);
-    printf("Press any key....\n");
+    printf("Press any key....");
     _getch();
 }
 void view_my_complain(char id[]){
@@ -468,7 +508,7 @@ void view_my_complain(char id[]){
     print_project_name();
     printCenter("View My Complains\n", 10);
     printCenter("---------------------------------------------------\n", 9);
-    printf("Press any key....\n");
+    printf("Press any key....");
     _getch();
 }
 void track_complain_by_complainID(){
@@ -476,7 +516,7 @@ void track_complain_by_complainID(){
     print_project_name();
     printCenter("Track Complain by Complain ID\n", 10);
     printCenter("---------------------------------------------------\n", 9);
-    printf("Press any key....\n");
+    printf("Press any key....");
     _getch();
 }
 void my_profile(char id[]){
@@ -484,7 +524,7 @@ void my_profile(char id[]){
     print_project_name();
     printCenter("My Profile\n", 10);
     printCenter("---------------------------------------------------\n", 9);
-    printf("Press any key....\n");
+    printf("Press any key....");
     _getch();
 }
 void student_logout(char id[]){
@@ -492,7 +532,7 @@ void student_logout(char id[]){
     print_project_name();
     printCenter("Logout\n", 10);
     printCenter("---------------------------------------------------\n", 9);
-    printf("Press any key....\n");
+    printf("Press any key....");
     _getch();
 }
 
@@ -558,7 +598,7 @@ int main()
 {
      system("cls");
 
-    int student_logged = 1;
+    int student_logged = 0;
     if(student_logged){
         // ========== DEV MODE START ==========
         // Uncomment this block to directly test student dashboard
