@@ -4,7 +4,9 @@
 #include <stdbool.h>
 #include <windows.h>
 #include <conio.h>
+#include <time.h>
 
+#define MAX_COMPLAIN 5000
 // ======= Function call =======
 
 //For students ===========
@@ -34,7 +36,7 @@ void student_logout(char id[]);
 
 
 
-
+int hidden=0;
 struct Student{
     char log_status[2];
     char id[15];
@@ -46,6 +48,7 @@ struct Student{
     char dob[15];
 };
 struct Student students_data[3000];
+char current_logged_student[15]; //current logged student id
 struct Login_info{
     char id[15];
     char password[20];
@@ -59,9 +62,20 @@ int registered_students = 0;
 // structure for complain 
 struct Complain{
     char cmpID[20];
-    char cmpTitle[500];
-    char cmpDescription[500];
+    char studentID[20];
+    char title[200];
+    char team[20];
+    char description[1000];
+    char status[10];
+    char date[10];
+    char time[20];
+    char comment[100];
+    char annonymous[5];
 };
+
+struct Complain all_complains[MAX_COMPLAIN];
+
+
 
 //========== text styling and alignment start ==========
 void textColor(int colorCode) {
@@ -464,6 +478,7 @@ void student_login(){
                 printCenterCustom("Welcome, ", 10);
                 textColor(10);
                 printf("%s! Login Successful. Redirecting to Student Dashboard...\n", students_data[found].name, 10);
+                strcmp(current_logged_student, students_login_info[found1].id);
                 textColor(7); // Reset color
                 Sleep(4000);
                 student_dashboard(id);
@@ -484,17 +499,165 @@ void student_login(){
 }
 // ================== student Login end ==================
 
+/////////////////////GENERATE ID //////////////
+char* generate_complain_ID(){
+    time_t t;
+    struct tm *tm_info;
+    char date_str[20];
+    time(&t);
+    tm_info = localtime(&t);
+    int serial;
+    strftime(date_str, sizeof(date_str), "%d%m%Y", tm_info);
+
+    char *cmpID = malloc(30);
+    FILE* fp = fopen("serial.txt", "r");
+    fscanf(fp, "%d", &serial);
+    fclose(fp);
+
+    sprintf(cmpID, "CMP-%s-%04d", date_str, serial);
+    // printf("%s\n", cmpID);
+    serial++;
+    fp = fopen("serial.txt", "w");
+    fprintf(fp, "%d", serial);
+    fclose(fp);
+    return cmpID;
+}
 
 
+// ================== take complain fucntion start ==================
+void take_complain(char id[], int choice){
+    system("cls");
+    print_project_name();
+    printCenter("Submit a New Complain\n", 10);
+    printCenter("---------------------------------------------------\n", 9);
+    struct Complain student_complain;
+    printLeft("Enter Complain Title: ", 11);
+    getchar();
+    fgets(student_complain.title, sizeof(student_complain.title), stdin);
+    student_complain.title[strcspn(student_complain.title, "\n")] = '\0';
 
+    printLeft("Enter Complain Description: ", 11);
+    fgets(student_complain.description, sizeof(student_complain.description), stdin);
+    student_complain.description[strcspn(student_complain.description, "\n")] = '\0';
+
+    char* cmpID = generate_complain_ID();
+    strcpy(student_complain.cmpID, cmpID);
+    strcpy(student_complain.status, "Pending");
+    
+
+    ///////================ FOR TIME===============
+    time_t t;
+    struct tm *tm_info;
+    char time_str[20];
+    char date_str[20];
+    char serial_str[20];
+    time(&t);
+    tm_info = localtime(&t);
+
+    strftime(time_str, sizeof(time_str), "%I:%M %p", tm_info);
+    strftime(date_str, sizeof(date_str), "%d/%m/%Y", tm_info);
+    printf("%s %s\n", time_str, date_str);
+    strcpy(student_complain.date, date_str);
+    strcpy(student_complain.time, time_str);
+    strcpy(student_complain.comment, "N/A");
+    if(hidden) strcpy(student_complain.annonymous, "y");
+    else strcpy(student_complain.annonymous, "n");
+    
+    switch (choice)
+    {
+        case 1:
+            strcpy(student_complain.team, "Hall Authority");
+            break;
+        case 2:
+            strcpy(student_complain.team, "IT Section");
+            break;
+        case 3:
+            strcpy(student_complain.team, "Registrar Office");
+            break;
+        case 4:
+            strcpy(student_complain.team, "Student Affairs");
+            break;
+        case 5:
+            strcpy(student_complain.team, "Dept. Of CSE");
+            break;
+        case 6:
+            strcpy(student_complain.team, "Dept. Of SWE");
+            break;
+        case 7:
+            strcpy(student_complain.team, "Dept. Of BBA");
+            break;
+        case 8:
+            strcpy(student_complain.team, "Dept. Of EEE");
+            break;
+        case 9:
+            strcpy(student_complain.team, "BLC Support Team");
+            break;
+        case 10:
+            strcpy(student_complain.team, "Finance and Accounts Team");
+            break;
+        case 11:
+            strcpy(student_complain.team, "Transport Management Team");
+            break;
+        default:
+            strcpy(student_complain.team, "Unknown Team");
+            break;
+    }
+
+    char filename[100];
+    sprintf(filename, "students_complain/%s.txt", id);
+    FILE* studnetFp = fopen(filename, "a");
+    fprintf(studnetFp, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
+        student_complain.cmpID,
+        student_complain.title,
+        student_complain.description,
+        student_complain.team,
+        student_complain.status,
+        student_complain.date,
+        student_complain.time,
+        student_complain.comment,
+        student_complain.annonymous
+    );
+    fclose(studnetFp);
+    free(cmpID);
+    
+}
+// ================== take complain fucntion end ==================
+
+// ================== submit new complain start ==================
 void submit_new_complain(char id[]){
     system("cls");
     print_project_name();
     printCenter("Submit a New Complain\n", 10);
     printCenter("---------------------------------------------------\n", 9);
+    int found = binary_search_on_students_data(id);
+    textColor(14);
+    printf("User: %s(%s)                                                                                                                          Role:Student\n", students_data[found].name, students_data[found].id);
+    textColor(7);
+    printCenter("Select the complain Team: \n", 10);
+    int choice;
+    printCenter(" 01. Hall Authority   \n", 11);
+    printCenter("  02. IT Section       \n", 11);
+    printCenter("03. Registrar Office\n", 11);
+    printCenter("04. Student Affairs\n", 11);
+    printCenter("05. Dept. Of CSE    \n", 11);
+    printCenter("06. Dept. Of SWE    \n", 11);
+    printCenter("07. Dept. Of BBA    \n", 11);
+    printCenter("08. Dept. Of EEE    \n", 11);
+    printCenter("09. BLC Support Team\n", 11);
+    printCenter("          10. Finance and Accounts Team\n", 11);
+    printCenter("          11. Transport Management Team\n", 11);
+    printCenter("0. Back\n", 11);
+
+    printf("Enter Choice: ");
+    scanf("%d", &choice);
+    if(choice == 0) return;
+    take_complain(id, choice);
     printf("Press any key....");
     _getch();
 }
+// ================== submit new complain end ==================
+
+// ================== submit anonymous complain start ==================
 void submit_annonymus_complain(char id[]){
     system("cls");
     print_project_name();
@@ -503,6 +666,9 @@ void submit_annonymus_complain(char id[]){
     printf("Press any key....");
     _getch();
 }
+// ================== submit anonymous complain end ==================
+
+// ================== view my complain start ==================
 void view_my_complain(char id[]){
     system("cls");
     print_project_name();
@@ -511,6 +677,9 @@ void view_my_complain(char id[]){
     printf("Press any key....");
     _getch();
 }
+// ================== view my complain end ==================
+
+// ================== track complain by complain ID start ==================
 void track_complain_by_complainID(){
     system("cls");
     print_project_name();
@@ -519,6 +688,9 @@ void track_complain_by_complainID(){
     printf("Press any key....");
     _getch();
 }
+// ================== submit new complain start ==================
+
+// ================== my profile start ==================
 void my_profile(char id[]){
     system("cls");
     print_project_name();
@@ -527,6 +699,9 @@ void my_profile(char id[]){
     printf("Press any key....");
     _getch();
 }
+// ==================  my profile end ==================
+
+// ================== student logout start ==================
 void student_logout(char id[]){
     system("cls");
     print_project_name();
@@ -535,6 +710,7 @@ void student_logout(char id[]){
     printf("Press any key....");
     _getch();
 }
+// ================== student logout end ==================
 
 
 // ================== student dashboard start ==================
@@ -545,7 +721,10 @@ void student_dashboard(char id[]){
     printCenter("---------------------------------------------------\n", 9);
     int choice;
     do{
-        
+        system("cls");
+        print_project_name();
+        printCenter("Student Dashboard\n", 10);
+        printCenter("---------------------------------------------------\n", 9);
         printCenter("1. Submit a New Complain     \n", 11);
         printCenter("   2. Submit an Annonymus Complain\n", 11);
         printCenter("3. View My Complains        \n", 11);
@@ -588,17 +767,12 @@ void student_dashboard(char id[]){
 
 
 
-
-
-
-
-
 // ========== Main function start ==========
 int main()
 {
-     system("cls");
+    system("cls");
 
-    int student_logged = 0;
+    int student_logged = 1;
     if(student_logged){
         // ========== DEV MODE START ==========
         // Uncomment this block to directly test student dashboard
