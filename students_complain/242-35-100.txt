@@ -1,0 +1,50 @@
+CMP-26072025-0003
+problem title
+problem description
+Registrar Office
+Pending
+26/07/2025
+05:46 PM
+N/A
+n
+
+CMP-27072025-0004
+Problem title
+Problem Description
+Dept. Of CSE
+Pending
+27/07/2025
+02:13 AM
+N/A
+n
+
+CMP-27072025-0005
+djfdksjafkjd
+sdfjsdajfkjdsaf
+Student Affairs
+Pending
+27/07/2025
+02:19 AM
+N/A
+n
+
+CMP-27072025-0006
+problem problem
+descriptiotn descriptiorfjsdf dkjflkj fdlksjfkdjsafkjdskfjkdsjfkds jkfj ksjkdajdsfk jflksd
+Dept. Of SWE
+Pending
+27/07/2025
+02:22 AM
+N/A
+n
+
+CMP-27072025-0007
+Transport system problem
+and here is the description
+Transport Managementand here is the description
+Pending
+27/07/2025
+03:47 AM
+N/A
+n
+
