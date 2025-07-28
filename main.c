@@ -583,7 +583,7 @@ void take_complain(char id[], int choice){
     printCenter("---------------------------------------------------\n", 9);
     int found = binary_search_on_students_data(id);
     textColor(14);
-    printf("User: %s(%s)                                                                                                                          Role:Student\n\n", students_data[found].name, students_data[found].id);
+            printf("User: %s(%s)                                                                                                                                                       Role:Student\n", students_data[found].name, students_data[found].id);
     textColor(7); //clear color
 
     textColor(11);
@@ -653,8 +653,7 @@ void submit_new_complain(char id[]){
     printCenter("---------------------------------------------------\n", 9);
     int found = binary_search_on_students_data(id);
     textColor(14);
-    printf("User: %s(%s)                                                                                                                          Role:Student\n", students_data[found].name, students_data[found].id);
-    textColor(7);
+        printf("User: %s(%s)                                                                                                                                                       Role:Student\n", students_data[found].name, students_data[found].id);    textColor(7);
     printCenter("Select the complain Team: \n", 10);
     int choice;
     printCenter(" 01. Hall Authority   \n", 11);
@@ -688,14 +687,69 @@ void submit_annonymus_complain(char id[]){
 }
 // ================== submit anonymous complain end ==================
 
-// ================== view my complain start ==================
-void view_my_complain(char id[]){
+
+// ================== view all complain start ==================
+void view_all_complain(char id[]){
     system("cls");
     print_project_name();
-    printCenter("View My Complains\n", 10);
+    printCenter("View My Complain\n", 10);
     printCenter("---------------------------------------------------\n", 9);
-    printf("Press any key....");
+    
+
+
     _getch();
+
+}
+// ================== view all complain end ==================
+
+// ================== view my complain start ==================
+void view_my_complain(char id[]){
+    int choice;
+    do{
+        system("cls");
+        print_project_name();
+        printCenter("View My Complain\n", 10);
+        printCenter("---------------------------------------------------\n", 9);
+        int found = binary_search_on_students_data(id);
+        textColor(14);
+        printf("User: %s(%s)                                                                                                                                                       Role:Student\n", students_data[found].name, students_data[found].id);        textColor(7);
+        printCenter("01. View All Complains     \n", 11);
+        printCenter("    02. View Only Pending Complains\n", 11);
+        printCenter("       03. View Only In Progress Complains\n", 11);
+        printCenter("    04. View Only Resolved Complains\n", 11);
+        printCenter("      05. View Only Annonymous Complains\n", 11);
+        printCenter(" 06. View Complain By Date    \n", 11);
+        printCenter("07. Back to Main Menu       \n", 11);
+        printLeft("Enter Your Choice: ", 2);
+        scanf("%d", &choice);
+        
+        switch (choice){
+        case 1:
+            view_all_complain(id);
+            break;
+        case 2:
+            submit_annonymus_complain(id);
+            break;
+        case 3:
+            view_my_complain(id);
+            break;
+        case 4:
+            track_complain_by_complainID();
+            break;
+        case 5:
+            my_profile(id);
+            break;
+        case 6:
+            student_logout(id);
+            break;
+        default:
+            printCenter("Invalid choice. Try again\n", 12);
+            break;
+        }
+
+    }while(choice != 0);
+    Sleep(5000);
+    return;
 }
 // ================== view my complain end ==================
 
@@ -735,10 +789,6 @@ void student_logout(char id[]){
 
 // ================== student dashboard start ==================
 void student_dashboard(char id[]){
-    system("cls");
-    print_project_name();
-    printCenter("Student Dashboard\n", 10);
-    printCenter("---------------------------------------------------\n", 9);
     int choice;
     do{
         system("cls");
@@ -747,14 +797,13 @@ void student_dashboard(char id[]){
         printCenter("---------------------------------------------------\n", 9);
         int found = binary_search_on_students_data(id);
         textColor(14);
-        printf("User: %s(%s)                                                                                                                          Role:Student\n", students_data[found].name, students_data[found].id);
-        textColor(7);
+        printf("User: %s(%s)                                                                                                                                                       Role:Student\n", students_data[found].name, students_data[found].id);        textColor(7);
         printCenter("1. Submit a New Complain     \n", 11);
-        printCenter("   2. Submit an Annonymus Complain\n", 11);
-        printCenter("3. View My Complains        \n", 11);
-        printCenter("    4. Track Complain By Complain ID\n", 11);
+        printCenter("  2. Submit an Annonymus Complain\n", 11);
+        printCenter("3. View My Complains          \n", 11);
+        printCenter("  4. Track Complain By Complain ID\n", 11);
         printCenter("5. My Profile                \n", 11);
-        printCenter("6. Logout                   \n", 11);
+        printCenter("6. Logout                     \n", 11);
         printLeft("Enter Your Choice: ", 2);
         scanf("%d", &choice);
         
@@ -796,7 +845,7 @@ int main()
 {
     system("cls");
 
-    int student_logged = 0;
+    int student_logged = 1;
     if(student_logged){
         // ========== DEV MODE START ==========
         // Uncomment this block to directly test student dashboard
