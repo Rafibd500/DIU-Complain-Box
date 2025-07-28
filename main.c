@@ -352,6 +352,8 @@ void student_registration()
         student_login();
         return;
     }
+
+    
     // ---------- Account validation ----------
     if (found != -1) {
         char dob[15];
