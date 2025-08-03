@@ -531,13 +531,7 @@ char* generate_complain_ID(){
     fp = fopen("serial.txt", "w");
     fprintf(fp, "%s %d", date_str, serial);
     fclose(fp);
-    // serial++;
     sprintf(cmpID, "CMP-%s-%04d", date_str, serial);
-    // printf("%s\n", cmpID);
-    
-    // fp = fopen("serial.txt", "w");
-    // fprintf(fp, "%d", serial);
-    // fclose(fp);
     return cmpID;
 }
 
@@ -695,8 +689,29 @@ void submit_annonymus_complain(char id[]){
 // ================== submit anonymous complain end ==================
 
 
+void spacePrint(){
+    int width = getConsoleWidth();
+    for(int i=0; i<width/9; i++) printf(" ");
+}
 // ================== view all complain start ==================
 void view_all_complain(char id[]) {
+    system("cls");
+    print_project_name();
+    printCenter("View All Complain\n", 10);
+    printCenter("---------------------------------------------------\n", 9);
+    // spacePrint();
+
+    //making menu
+    spacePrint();
+    printf("| %-25s | %-40s | %-25s | %-25s | %-30s\n", "Complain ID", "Title", "Team", "Status", "Issued Date");
+    spacePrint();
+    printf("| %-25s | %-40s | %-25s | %-25s | %-30s\n", "CMP-31072025-0013", "Projector not working in Lab 3", "Academic Affairs", "In Progress", "31/07/2025");
+    spacePrint();
+    printf("| %-25s | %-40s | %-25s | %-25s | %-30s\n", "Complain ID", "Title", "Team", "Status", "Issued Date");
+    spacePrint();
+    printf("| %-25s | %-40s | %-25s | %-25s | %-30s\n", "Complain ID", "Title", "Team", "Status", "Issued Date");
+    spacePrint();
+    printf("| %-25s | %-40s | %-25s | %-25s | %-30s\n", "Complain ID", "Title", "Team", "Status", "Issued Date");
     
 
     printf("\nPress any key to return...");
