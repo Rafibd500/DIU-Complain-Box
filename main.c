@@ -513,26 +513,31 @@ char* generate_complain_ID(){
     char date_str[20];
     time(&t);
     tm_info = localtime(&t);
-    int serial;
     strftime(date_str, sizeof(date_str), "%d%m%Y", tm_info);
 
     char *cmpID = malloc(30);
-    FILE* fp = fopen("serial.txt", "r");
-    if(fp == NULL){
-        serial = 0;
-    }
-    else{
-        fscanf(fp, "%d", &serial);
+    int serial = 1;
+    char last_date[20] = "00000000";
+    int last_serial = 0;
+
+    FILE *fp = fopen("serial.txt", "r");
+    if (fp != NULL) {
+        fscanf(fp, "%s %d", last_date, &last_serial);
         fclose(fp);
+        if (strcmp(last_date, date_str) == 0) {
+            serial = last_serial + 1;
+        }
     }
+    fp = fopen("serial.txt", "w");
+    fprintf(fp, "%s %d", date_str, serial);
     fclose(fp);
-    serial++;
+    // serial++;
     sprintf(cmpID, "CMP-%s-%04d", date_str, serial);
     // printf("%s\n", cmpID);
     
-    fp = fopen("serial.txt", "w");
-    fprintf(fp, "%d", serial);
-    fclose(fp);
+    // fp = fopen("serial.txt", "w");
+    // fprintf(fp, "%d", serial);
+    // fclose(fp);
     return cmpID;
 }
 
@@ -691,17 +696,16 @@ void submit_annonymus_complain(char id[]){
 
 
 // ================== view all complain start ==================
-void view_all_complain(char id[]){
-    system("cls");
-    print_project_name();
-    printCenter("View My Complain\n", 10);
-    printCenter("---------------------------------------------------\n", 9);
+void view_all_complain(char id[]) {
     
 
-
+    printf("\nPress any key to return...");
     _getch();
-
 }
+
+
+
+
 // ================== view all complain end ==================
 
 // ================== view my complain start ==================
