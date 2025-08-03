@@ -1,30 +1,60 @@
-CMP-26072025-0001
-1111
-11111
+CMP-31072025-0012
+Cannot access university WiFi
+The WiFi connection in the academic building is very unstable and keeps disconnecting frequently. It affects class participation and assignments.
 IT Section
 Pending
-26/07/2025
-04:05 PM
-N/A
-n
+31/07/2025
+10:15 AM
+Forwarded to network team for inspection.
+r
 
-CMP-28072025-0009
-,,,,,,,,,,,,
-.................
-Dept. Of EEE
-Pending
-28/07/2025
-10:17 PM
-N/A
-n
+CMP-31072025-0013
+Projector not working in Lab 3
+The projector in Lab 3 is not displaying anything. Urgent class tomorrow.
+Academic Affairs
+In Progress
+31/07/2025
+01:20 PM
+Technician assigned to investigate.
+s
 
-CMP-28072025-0010
-////////////
-,,,,,,,,,,,
-BLC Support Team
+CMP-31072025-0014
+Water leakage in Washroom
+There is continuous water leakage in the 2nd-floor washroom.
+Maintenance
 Pending
-28/07/2025
-10:17 PM
+31/07/2025
+03:50 PM
+Maintenance team has been informed.
+t
+
+CMP-31072025-0015
+Air conditioning not working
+AC in Room 502 is not cooling properly. Please look into it.
+Maintenance
+In Progress
+31/07/2025
+12:35 PM
+Inspection scheduled for tomorrow.
+u
+
+CMP-31072025-0016
+Course registration issue
+Unable to register for one of the elective courses due to system error.
+Academic Affairs
+Resolved
+31/07/2025
+02:45 PM
+Course manually registered by admin.
+v
+
+CMP-04082025-0001
+aaa
+bb
+Hall Authority
+Pending
+04/08/2025
+02:56 AM
 N/A
 n
 
