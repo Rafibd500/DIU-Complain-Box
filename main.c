@@ -352,6 +352,8 @@ void student_registration()
         student_login();
         return;
     }
+
+    
     // ---------- Account validation ----------
     if (found != -1) {
         char dob[15];
@@ -511,26 +513,25 @@ char* generate_complain_ID(){
     char date_str[20];
     time(&t);
     tm_info = localtime(&t);
-    int serial;
     strftime(date_str, sizeof(date_str), "%d%m%Y", tm_info);
 
     char *cmpID = malloc(30);
-    FILE* fp = fopen("serial.txt", "r");
-    if(fp == NULL){
-        serial = 0;
-    }
-    else{
-        fscanf(fp, "%d", &serial);
+    int serial = 1;
+    char last_date[20] = "00000000";
+    int last_serial = 0;
+
+    FILE *fp = fopen("serial.txt", "r");
+    if (fp != NULL) {
+        fscanf(fp, "%s %d", last_date, &last_serial);
         fclose(fp);
+        if (strcmp(last_date, date_str) == 0) {
+            serial = last_serial + 1;
+        }
     }
-    fclose(fp);
-    serial++;
-    sprintf(cmpID, "CMP-%s-%04d", date_str, serial);
-    // printf("%s\n", cmpID);
-    
     fp = fopen("serial.txt", "w");
-    fprintf(fp, "%d", serial);
+    fprintf(fp, "%s %d", date_str, serial);
     fclose(fp);
+    sprintf(cmpID, "CMP-%s-%04d", date_str, serial);
     return cmpID;
 }
 
@@ -688,18 +689,38 @@ void submit_annonymus_complain(char id[]){
 // ================== submit anonymous complain end ==================
 
 
+void spacePrint(){
+    int width = getConsoleWidth();
+    for(int i=0; i<width/9; i++) printf(" ");
+}
 // ================== view all complain start ==================
-void view_all_complain(char id[]){
+void view_all_complain(char id[]) {
     system("cls");
     print_project_name();
-    printCenter("View My Complain\n", 10);
+    printCenter("View All Complain\n", 10);
     printCenter("---------------------------------------------------\n", 9);
+    // spacePrint();
+
+    //making menu
+    spacePrint();
+    printf("| %-25s | %-40s | %-25s | %-25s | %-30s\n", "Complain ID", "Title", "Team", "Status", "Issued Date");
+    spacePrint();
+    printf("| %-25s | %-40s | %-25s | %-25s | %-30s\n", "CMP-31072025-0013", "Projector not working in Lab 3", "Academic Affairs", "In Progress", "31/07/2025");
+    spacePrint();
+    printf("| %-25s | %-40s | %-25s | %-25s | %-30s\n", "Complain ID", "Title", "Team", "Status", "Issued Date");
+    spacePrint();
+    printf("| %-25s | %-40s | %-25s | %-25s | %-30s\n", "Complain ID", "Title", "Team", "Status", "Issued Date");
+    spacePrint();
+    printf("| %-25s | %-40s | %-25s | %-25s | %-30s\n", "Complain ID", "Title", "Team", "Status", "Issued Date");
     
 
-
+    printf("\nPress any key to return...");
     _getch();
-
 }
+
+
+
+
 // ================== view all complain end ==================
 
 // ================== view my complain start ==================
