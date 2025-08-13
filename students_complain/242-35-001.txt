@@ -2,59 +2,99 @@ CMP-31072025-0012
 Cannot access university WiFi
 The WiFi connection in the academic building is very unstable and keeps disconnecting frequently. It affects class participation and assignments.
 IT Section
-Pending
+1
 31/07/2025
 10:15 AM
 Forwarded to network team for inspection.
-r
+n
 
 CMP-31072025-0013
 Projector not working in Lab 3
 The projector in Lab 3 is not displaying anything. Urgent class tomorrow.
 Academic Affairs
-In Progress
+2
 31/07/2025
 01:20 PM
 Technician assigned to investigate.
-s
+n
 
 CMP-31072025-0014
 Water leakage in Washroom
 There is continuous water leakage in the 2nd-floor washroom.
 Maintenance
-Pending
+1
 31/07/2025
 03:50 PM
 Maintenance team has been informed.
-t
+y
 
 CMP-31072025-0015
 Air conditioning not working
 AC in Room 502 is not cooling properly. Please look into it.
 Maintenance
-In Progress
+2
 31/07/2025
 12:35 PM
 Inspection scheduled for tomorrow.
-u
+n
 
 CMP-31072025-0016
 Course registration issue
 Unable to register for one of the elective courses due to system error.
 Academic Affairs
-Resolved
+3
 31/07/2025
 02:45 PM
 Course manually registered by admin.
-v
+y
 
 CMP-04082025-0001
 aaa
 bb
 Hall Authority
-Pending
+1
 04/08/2025
 02:56 AM
+N/A
+n
+
+CMP-31072025-0012
+Cannot access university WiFi Cannot access university WiFi Cannot access university WiFi
+The WiFi connection in the academic building is very unstable and keeps disconnecting frequently. It affects class participation and assignments.
+IT Section
+1
+31/07/2025
+10:15 AM
+Forwarded to network team for inspection.
+n
+
+CMP-06082025-0001
+Cannot access university WiFi Cannot access university WiFi Cannot access university WiFi
+The WiFi connection in the academic building is very unstable and keeps disconnecting frequently. It affects class participation and assignments.The WiFi connection in the academic building is very unstable and keeps disconnecting frequently. It affects class participation and assignments.
+Registrar Office
+1
+06/08/2025
+11:31 PM
+N/A
+n
+
+CMP-06082025-0002
+Cannot access university WiFi Cannot access university WiFi Cannot access university WiFi
+The WiFi connection in the academic building is very unstable and keeps disconnecting frequently. It affects class participation and assignments.The WiFi connection in the academic building is very unstable and keeps disconnecting frequently. It affects class participation and assignments.
+Dept. Of CSE
+1
+06/08/2025
+11:32 PM
+N/A
+n
+
+CMP-07082025-0001
+title
+desc
+Dept. Of CSE
+1
+07/08/2025
+02:03 AM
 N/A
 n
 
