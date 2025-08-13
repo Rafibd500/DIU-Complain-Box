@@ -1,0 +1,30 @@
+CMP-07082025-0005
+Lorem Ipsum is simply dummy text of the printing
+ry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially un
+Hall Authority
+1
+07/08/2025
+07:50 PM
+N/A
+n
+
+CMP-07082025-0006
+Electricity Issues
+Electricity issues for 9 hours
+Hall Authority
+1
+07/08/2025
+09:05 PM
+N/A
+n
+
+CMP-07082025-0007
+Title
+Description
+IT Section
+1
+07/08/2025
+09:06 PM
+N/A
+y
+

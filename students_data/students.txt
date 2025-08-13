@@ -13,7 +13,7 @@
 0|242-15-013|Hasan Mahmud|D|CSE|01525601230|mahmud242-15-013@diu.edu.bd|01/07/2004
 0|242-15-014|Naim Sheikh|J|CSE|01889101399|naim242-15-014@diu.edu.bd|24/05/2001
 0|242-15-015|Tanjina Sultana|G|CSE|01351090321|tanjina242-15-015@diu.edu.bd|31/10/2003
-0|242-15-016|Sabbir Rahman|D|CSE|01800869141|rahman242-15-016@diu.edu.bd|20/09/2000
+1|242-15-016|Sabbir Rahman|D|CSE|01800869141|rahman242-15-016@diu.edu.bd|20/09/2000
 0|242-15-017|Sabrina Ahmed|B|CSE|01845620870|ahmed242-15-017@diu.edu.bd|07/12/2001
 0|242-15-018|Rakibul Islam|B|CSE|01863457923|islam242-15-018@diu.edu.bd|22/09/2000
 0|242-15-019|Tariq Aziz|A|CSE|01922584197|aziz242-15-019@diu.edu.bd|19/12/2005
@@ -97,7 +97,7 @@
 0|242-15-097|Arif Hossain|E|CSE|01530191263|hossain242-15-097@diu.edu.bd|14/07/2004
 0|242-15-098|Anika Tabassum|E|CSE|01808860164|anika242-15-098@diu.edu.bd|25/12/2001
 0|242-15-099|Tanjina Sultana|J|CSE|01538433184|tanjina242-15-099@diu.edu.bd|28/04/2003
-0|242-15-100|Zahid Hasan|F|CSE|01457492208|hasan242-15-100@diu.edu.bd|25/04/2000
+1|242-15-100|Zahid Hasan|F|CSE|01457492208|hasan242-15-100@diu.edu.bd|25/04/2000
 0|242-15-101|Mahmudul Hasan|F|CSE|01590262281|hasan242-15-101@diu.edu.bd|10/08/2004
 0|242-15-102|Mim Chowdhury|D|CSE|01979332365|mim242-15-102@diu.edu.bd|29/04/2006
 0|242-15-103|Rakibul Islam|J|CSE|01471908957|rakibul242-15-103@diu.edu.bd|23/10/2002
@@ -504,7 +504,7 @@
 0|242-35-004|Shakib Al Hasan|F|SWE|01738778408|al242-35-004@diu.edu.bd|18/11/1999
 0|242-35-005|Imran Khan|A|SWE|01360975351|imran242-35-005@diu.edu.bd|27/09/2001
 0|242-35-006|Anika Tabassum|J|SWE|01432871158|anika242-35-006@diu.edu.bd|20/11/2003
-0|242-35-007|Imran Khan|H|SWE|01348418583|khan242-35-007@diu.edu.bd|02/09/2003
+1|242-35-007|Imran Khan|H|SWE|01348418583|khan242-35-007@diu.edu.bd|02/09/2003
 0|242-35-008|Samiul Islam|J|SWE|01794719659|islam242-35-008@diu.edu.bd|25/12/2002
 0|242-35-009|Sabrina Ahmed|E|SWE|01432094711|ahmed242-35-009@diu.edu.bd|16/03/2006
 0|242-35-010|Zahid Hasan|C|SWE|01401868483|hasan242-35-010@diu.edu.bd|12/02/2002
@@ -599,10 +599,10 @@
 0|242-35-099|Tanjina Sultana|J|SWE|01538433184|sultana242-35-099@diu.edu.bd|28/04/2003
 1|242-35-100|Zahid Hasan|F|SWE|01457492208|zahid242-35-100@diu.edu.bd|25/04/2000
 0|242-35-101|Mahmudul Hasan|F|SWE|01590262281|hasan242-35-101@diu.edu.bd|10/08/2004
-0|242-35-102|Mim Chowdhury|D|SWE|01979332365|chowdhury242-35-102@diu.edu.bd|29/04/2006
+1|242-35-102|Mim Chowdhury|D|SWE|01979332365|chowdhury242-35-102@diu.edu.bd|29/04/2006
 0|242-35-103|Rakibul Islam|J|SWE|01471908957|rakibul242-35-103@diu.edu.bd|23/10/2002
 0|242-35-104|Mehedi Hasan|E|SWE|01338277851|hasan242-35-104@diu.edu.bd|27/03/2002
-0|242-35-105|Farzana Islam|C|SWE|01763546030|islam242-35-105@diu.edu.bd|07/06/2004
+1|242-35-105|Farzana Islam|C|SWE|01763546030|islam242-35-105@diu.edu.bd|07/06/2004
 0|242-35-106|Mehzabin Haque|D|SWE|01573452405|haque242-35-106@diu.edu.bd|06/08/2001
 0|242-35-107|Nasir Uddin|I|SWE|01325070030|uddin242-35-107@diu.edu.bd|03/01/2002
 0|242-35-108|Mousumi Akter|D|SWE|01851056237|akter242-35-108@diu.edu.bd|06/02/2001
@@ -618,7 +618,7 @@
 0|242-35-118|Tanvir Ahmed|E|SWE|01419539852|ahmed242-35-118@diu.edu.bd|20/04/2000
 0|242-35-119|Imran Khan|C|SWE|01509092554|imran242-35-119@diu.edu.bd|23/04/2005
 1|242-35-120|Arif Hossain|E|SWE|01576962029|hossain242-35-120@diu.edu.bd|24/12/2005
-0|242-35-121|Jannatul Ferdous|H|SWE|01450749318|jannatul242-35-121@diu.edu.bd|23/08/2000
+1|242-35-121|Jannatul Ferdous|H|SWE|01450749318|jannatul242-35-121@diu.edu.bd|23/08/2000
 0|242-35-122|Imran Khan|G|SWE|01528212918|khan242-35-122@diu.edu.bd|22/10/2000
 0|242-35-123|Arif Hossain|I|SWE|01766444064|hossain242-35-123@diu.edu.bd|13/11/1999
 0|242-35-124|Farzana Islam|I|SWE|01785536208|farzana242-35-124@diu.edu.bd|21/03/2000
