@@ -973,13 +973,79 @@ void track_complain_by_complainID(char id[]){
 // ================== submit new complain start ==================
 
 
-
 // ================== my profile start ==================
-
+void spacePrintProfile(){
+    int width = getConsoleWidth();
+    for(int i=0; i<width/2-35; i++) printf(" ");
+}
 void my_profile(char id[]) {
+    system("cls");
+    print_project_name();
+    printCenter("My Profile\n", 11);
+    printCenter("---------------------------------------------------\n", 9);
+
+    int found = binary_search_on_students_data(id);
+    if (found == -1) {
+        textColor(12); // Red for error
+        printCenter("Student not found.\n", 12);
+        textColor(7);
+        printf("Press any key to return...");
+        _getch();
+        return;
+    }
+
+    struct Student s = students_data[found];
+
+    //head/ title
+    spacePrintProfile(); textColor(11);
+    for (int i = 0; i < 70; i++) printf("=");
+    printf("\n");
+
+    spacePrintProfile(); textColor(11);
+    printf("|%-25s", "");
+    textColor(10);
+    printf("PROFILE INFORMATION");
+    textColor(11); printf("%-24s|\n", "");
+
+    spacePrintProfile(); textColor(11);
+    for (int i = 0; i < 70; i++) printf("=");
+    printf("\n");
+
+    //show details----
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Student ID");     
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.id);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Name");           
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.name);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Section");        
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.section);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Department");     
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.dept);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Mobile Number");  
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.mobile);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Email");          
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.email);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Date of Birth");  
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.dob);
+
     
+    spacePrintProfile(); textColor(11);
+    for (int i = 0; i < 70; i++) printf("=");
+    printf("\n");
+
+    
+    textColor(10); 
+    printCenter("\nPress any key to return to the dashboard...", 7);
+    textColor(7);
+    _getch();
 }
 // ==================  my profile end ==================
+
 
 // ================== student logout start ==================
 void student_logout(char id[]){
