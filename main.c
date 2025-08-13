@@ -82,6 +82,19 @@ struct Complain{
 struct Complain all_complains[MAX_COMPLAIN];
 
 
+
+struct Admin {
+    char username[30];
+    char password[30];
+};
+
+struct Admin admins[100];
+int admin_count = 0;
+
+
+
+
+
 //========== text styling and alignment start ==========
 void textColor(int colorCode) {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colorCode);
@@ -297,6 +310,11 @@ void sort_student_login_info(){
 }
 
 
+
+
+
+
+
 // ================== student registration / Login choice page start ==================
 void student_login_reg()
 {
@@ -474,7 +492,7 @@ void student_login(){
     input_hidden_password(password);
     load_logged_student_data();
     int found1 = binary_search_on_students_login(id);
-    if(found1 != 0){ 
+    if(found1 != -1){ 
         if(strcmp(students_login_info[found1].id, id) == 0){
             char decrypt_pass[20];
             strcpy(decrypt_pass, students_login_info[found1].password);
@@ -484,7 +502,7 @@ void student_login(){
                 printCenterCustom("Welcome, ", 10);
                 textColor(10);
                 printf("%s! Login Successful. Redirecting to Student Dashboard...\n", students_data[found].name, 10);
-                strcmp(current_logged_student, students_login_info[found1].id);
+                strcpy(current_logged_student, students_login_info[found1].id);
                 textColor(7); // Reset color
                 Sleep(4000);
                 student_dashboard(id);
@@ -732,6 +750,7 @@ void show_complain_details_by_id(struct Complain complaints[], int count, char c
     _getch();
 }
 
+
 void view_all_complain(char id[]) {
     system("cls");
     print_project_name();
@@ -773,7 +792,9 @@ void view_all_complain(char id[]) {
         print_project_name();
         printCenter("All Complaints\n", 10);
         printCenter("---------------------------------------------------\n", 9);
-
+        int found = binary_search_on_students_data(id);
+        textColor(14);
+        printf("User: %s(%s)                                                                                                                                                       Role:Student\n\n", students_data[found].name, students_data[found].id);        textColor(7);
         spacePrint();
         printf("| %-25s | %-40s | %-25s | %-15s | %-15s |\n", 
                "Complain ID", "Title", "Team", "Status", "Issued Date");
@@ -823,7 +844,6 @@ void view_all_complain(char id[]) {
             else if (filter_choice == 2) strcpy(status_filter, "2");
             else if (filter_choice == 3) strcpy(status_filter, "3");
             else if (filter_choice == 4) filter_anon = 1;
-
             // display filtered complaints
             system("cls");
             print_project_name();
@@ -834,7 +854,8 @@ void view_all_complain(char id[]) {
                 else if (strcmp(status_filter, "2") == 0) printCenter("Filtered by: In Progress\n", 11);
                 else if (strcmp(status_filter, "3") == 0) printCenter("Filtered by: Resolved\n", 11);
             }
-
+            textColor(14);
+            printf("User: %s(%s)                                                                                                                                                       Role:Student\n\n", students_data[found].name, students_data[found].id);        textColor(7);
             spacePrint();
             printf("| %-25s | %-40s | %-25s | %-15s | %-15s |\n", "Complain ID", "Title", "Team", "Status", "Issued Date");
             spacePrint();
@@ -892,45 +913,11 @@ void view_all_complain(char id[]) {
     } while (filter_choice != 0);
 }
 
-
-
 // ================== view all complain end ==================
 
-// ================== view my complain start ==================
-void view_my_complain(char id[]){
-    int choice;
-    do{
-        system("cls");
-        print_project_name();
-        printCenter("View My Complain\n", 10);
-        printCenter("---------------------------------------------------\n", 9);
-        int found = binary_search_on_students_data(id);
-        textColor(14);
-        printf("User: %s(%s)                                                                                                                                                       Role:Student\n", students_data[found].name, students_data[found].id);        textColor(7);
-        printCenter("01. View All Complaints\n", 11);
-        printCenter("02. View Complaint by Date\n", 11);
-        printCenter("0. Back to Main Menu\n", 11);
-        printLeft("Enter Your Choice: ", 2);
-        scanf("%d", &choice);
 
-        switch (choice) {
-            case 1:
-                view_all_complain(id);
-                break;
-            case 2:
-                // view_complain_by_date(id);
-                break;
-            case 0:
-                return; // Go back to main menu
-            default:
-                printCenter("Invalid choice. Try again.\n", 12);
-                break;
-        }
-    } while (1);
-    Sleep(5000);
-    return;
-}
-// ================== view my complain end ==================
+
+
 
 // ================== track complain by complain ID start ==================
 void track_complain_by_complainID(char id[]){
@@ -1048,23 +1035,38 @@ void my_profile(char id[]) {
 
 
 // ================== student logout start ==================
-void student_logout(char id[]){
+void student_logout(char id[]) {
     system("cls");
     print_project_name();
     printCenter("Logout\n", 10);
     printCenter("---------------------------------------------------\n", 9);
-    printf("Press any key....");
+
+    // Clear the logged student variable
+    strcpy(current_logged_student, "");
+
+    printCenter("You have been logged out successfully.\n", 10);
+    printCenter("Press any key to return to the main menu...", 11);
     _getch();
+
+    return; // Go back to main()
 }
+
 // ================== student logout end ==================
 
 
 
 
 // ================== student dashboard start ==================
-void student_dashboard(char id[]){
+void student_dashboard(char id[]) {
+    if (strcmp(current_logged_student, "") == 0) {
+        printCenter("Access denied. Please login first.\n", 12);
+        printCenter("Press any key to return to main menu...", 4);
+        _getch();
+        return;
+    }
+
     int choice;
-    do{
+    do {
         system("cls");
         print_project_name();
         printCenter("Student Dashboard\n", 10);
@@ -1080,60 +1082,112 @@ void student_dashboard(char id[]){
         printCenter("6. Logout                     \n", 11);
         printLeft("Enter Your Choice: ", 2);
         scanf("%d", &choice);
-        
-        switch (choice){
-        case 1:
-            submit_new_complain(id);
-            break;
-        case 2:
-            submit_annonymus_complain(id);
-            break;
-        case 3:
-            view_my_complain(id);
-            break;
-        case 4:
-            track_complain_by_complainID(id);
-            break;
-        case 5:
-            my_profile(id);
-            break;
-        case 6:
-            student_logout(id);
-            break;
-        default:
-            printCenter("Invalid choice. Try again\n", 12);
-            break;
-        }
 
-    }while(choice != 0);
-    Sleep(5000);
-    return;
+        switch (choice) {
+            case 1:
+                submit_new_complain(id); break;
+            case 2:
+                submit_annonymus_complain(id); break;
+            case 3:
+                view_all_complain(id); break;
+            case 4:
+                track_complain_by_complainID(id); break;
+            case 5:
+                my_profile(id); break;
+            case 6:
+                student_logout(id); return; // Logout and return to main()
+            case 0:
+                return; // Back to main menu
+        }
+    } while (1);
 }
+
 // ================== student dashboard end ==================
 
 
+// ========== ADMIN DASHBOARD ==========
+void admin_dashboard() {
+    int choice;
+    do {
+        system("cls");
+        print_project_name();
+        printCenter("Admin Dashboard\n", 10);
+        printCenter("----------------------------------------------\n", 9);
+        printCenter("1. View All Complaints (Filter)\n", 11);
+        printCenter("2. Update Complaint Status\n", 11);
+        printCenter("3. Track Complaint by ID\n", 11);
+        printCenter("4. Add Admin\n", 11);
+        printCenter("5. Add Team User\n", 11);
+        printCenter("6. Logout\n", 11);
+        printLeft("Enter your choice: ", 2);
+        scanf("%d", &choice);
 
+        switch (choice) {
+            case 1:
+                // view_all_complaints();
+                break;
+            case 2:
+                // update_complaint_status();
+                break;
+            case 3:
+                // track_complaint_by_id();
+                break;
+            case 4:
+                // add_admin();
+                break;
+            case 5:
+                // add_team_user();
+                break;
+            case 6:
+                return; // logout
+        }
+    } while (1);
+}
+
+// admin utitily functions 
+void load_admins() {
+    admin_count = 0;
+    FILE *fp = fopen("admin/admin_login.txt", "r");
+    if (fp == NULL) {
+        printf("Admin file not found!\n");
+        return;
+    }
+    while (fscanf(fp, "%[^|]|%[^\n]\n", admins[admin_count].username, admins[admin_count].password) != EOF) {
+        admin_count++;
+    }
+    fclose(fp);
+}
+// ========== ADMIN LOGIN ==========
+void admin_login(){
+    system("cls");
+    print_project_name();
+    printCenter("Admin Login\n", 12);
+    printCenter("---------------------------------------------------\n", 9);
+    char username[30], password[30];
+
+    printLeft("Enter Username: ", 15);
+    scanf("%s", username);
+    printLeft("Enter Password: ", 15);
+    input_hidden_password(password);
+
+    load_admins();
+    for (int i = 0; i < admin_count; i++) {
+        if (strcmp(admins[i].username, username) == 0 && strcmp(admins[i].password, password) == 0) {
+            printCenter("Login successful! Redirecting to dashboard...\n", 10);
+            Sleep(3000);
+            admin_dashboard();
+            return;
+        }
+    }
+
+    printCenter("Invalid credentials! Try again...\n", 12);
+    Sleep(2000);
+}
 
 // ========== Main function start ==========
-int main()
-{
-    system("cls");
-
-    int student_logged = 0;
-    if(student_logged){
-        // ========== DEV MODE START ==========
-        
-        char test_student_id[] = "242-35-001";
-        student_dashboard(test_student_id);
-        return 0;
-        
-        // ========== DEV MODE END ==========
-    }
-    // system("cls");
+int main() {
     int choice;
-    do
-    {
-        
+    do {
         system("cls");
         print_project_name();
         printCenter("1. Student Login\n", 3);
@@ -1146,17 +1200,18 @@ int main()
 
         printf("Enter Choice: ");
         scanf("%d", &choice);
-        switch (choice)
-        {
-        case 1:
-            system("cls");
-            student_login_reg();
-            break;
 
-        default:
-            break;
+        switch (choice) {
+            case 1:
+                student_login_reg(); break;
+            case 2:
+                admin_login(); break;
         }
 
     } while (choice != 0);
+
+    return 0;
 }
+
+
 // ========== Main function start ==========
