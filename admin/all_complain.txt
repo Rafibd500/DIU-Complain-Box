@@ -1,88 +1,66 @@
-CMP-13082025-0001
+CMP-31072025-0014
 242-35-356
-IT section problem title
+Water leakage in Hall 2 bathroom
+Hall Authority
+Continuous water leakage reported in Hall 2, making the area slippery.
+1
+30/07/2025
+09:00 AM
+again pending
+y
+
+CMP-31072025-0015
+242-35-356
+Internet down in Admin Building
 IT Section
-projector not working.dksfkdhfkhdkf
+Wi-Fi network unavailable since morning in entire building.
 2
-13/08/2025
-08:55 PM
-Reported
+30/07/2025
+10:00 AM
+Network team dispatched to troubleshoot.
 n
 
-CMP-13082025-0001
+CMP-31072025-0016
 242-35-356
-IT section problem title
-IT Section
-projector not working.dksfkdhfkhdkf
-1
-13/08/2025
-08:55 PM
-N/A
+Incorrect name on degree certificate
+Registrar Office
+Student reported spelling mistake in issued certificate.
+3
+30/07/2025
+11:00 AM
+Solved this issues with register
+y
+
+CMP-31072025-0017
+242-35-356
+Unresponsive student portal
+Registrar Office
+Login failure and blank dashboard on student portal.
+2
+30/07/2025
+12:00 PM
+In progressing
 n
 
-CMP-13082025-0001
+CMP-31072025-0018
 242-35-356
-IT section problem title
-IT Section
-projector not working.dksfkdhfkhdkf
-1
-13/08/2025
-08:55 PM
-N/A
-n
+Room allocation confusion for new students
+Hall Authority
+Several students got duplicate room allocations.
+2
+30/07/2025
+01:00 PM
+In progressigng
+y
 
-CMP-13082025-0001
+CMP-31072025-0019
 242-35-356
-IT section problem title
-IT Section
-projector not working.dksfkdhfkhdkf
-1
-13/08/2025
-08:55 PM
-N/A
-n
-
-CMP-13082025-0001
-242-35-356
-IT section problem title
-IT Section
-projector not working.dksfkdhfkhdkf
-1
-13/08/2025
-08:55 PM
-N/A
-n
-
-CMP-13082025-0001
-242-35-356
-IT section problem title
-IT Section
-projector not working.dksfkdhfkhdkf
-1
-13/08/2025
-08:55 PM
-N/A
-n
-
-CMP-13082025-0001
-242-35-356
-IT section problem title
-IT Section
-projector not working.dksfkdhfkhdkf
-1
-13/08/2025
-08:55 PM
-N/A
-n
-
-CMP-13082025-0001
-242-35-356
-IT section problem title
-IT Section
-projector not working.dksfkdhfkhdkf
-1
-13/08/2025
-08:55 PM
-N/A
+Computer lab PCs not turning on
+Dept. Of CSE
+Half of Lab 2 PCs not powering up before morning class.
+2
+31/07/2025
+08:00 AM
+issue in progreess
 n
 

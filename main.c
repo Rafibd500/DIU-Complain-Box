@@ -84,13 +84,16 @@ struct Complain all_complains[MAX_COMPLAIN];
 
 
 struct Admin {
+    char name[50];
+    char adminID[20];
+    char email[50];
+    char phone[20];
     char username[30];
     char password[30];
 };
-
+char current_logged_admin[30];
 struct Admin admins[100];
 int admin_count = 0;
-
 
 
 
@@ -308,11 +311,6 @@ void sort_student_login_info(){
     }
     upload_logged_student_data();
 }
-
-
-
-
-
 
 
 // ================== student registration / Login choice page start ==================
@@ -565,30 +563,18 @@ void take_complain(char id[], int choice){
             strcpy(student_complain.team, "IT Section");
             break;
         case 3:
-            strcpy(student_complain.team, "Registrar Office");
-            break;
-        case 4:
-            strcpy(student_complain.team, "Student Affairs");
-            break;
-        case 5:
             strcpy(student_complain.team, "Dept. Of CSE");
             break;
-        case 6:
+        case 4:
             strcpy(student_complain.team, "Dept. Of SWE");
             break;
-        case 7:
-            strcpy(student_complain.team, "Dept. Of BBA");
-            break;
-        case 8:
-            strcpy(student_complain.team, "Dept. Of EEE");
-            break;
-        case 9:
+        case 5:
             strcpy(student_complain.team, "BLC Support Team");
             break;
-        case 10:
+        case 6:
             strcpy(student_complain.team, "Finance and Accounts Team");
             break;
-        case 11:
+        case 7:
             strcpy(student_complain.team, "Transport Management Team");
             break;
         default:
@@ -698,15 +684,11 @@ void submit_new_complain(char id[]){
     int choice;
     printCenter(" 01. Hall Authority   \n", 11);
     printCenter("  02. IT Section       \n", 11);
-    printCenter("03. Registrar Office\n", 11);
-    printCenter("04. Student Affairs\n", 11);
-    printCenter("05. Dept. Of CSE    \n", 11);
-    printCenter("06. Dept. Of SWE    \n", 11);
-    printCenter("07. Dept. Of BBA    \n", 11);
-    printCenter("08. Dept. Of EEE    \n", 11);
-    printCenter("09. BLC Support Team\n", 11);
-    printCenter("          10. Finance and Accounts Team\n", 11);
-    printCenter("          11. Transport Management Team\n", 11);
+    printCenter("03. Dept. Of CSE    \n", 11);
+    printCenter("04. Dept. Of SWE    \n", 11);
+    printCenter("05. BLC Support Team\n", 11);
+    printCenter("          6. Finance and Accounts Team\n", 11);
+    printCenter("          7. Transport Management Team\n", 11);
     printCenter("0. Back\n", 11);
 
     printf("Enter Choice: ");
@@ -1141,58 +1123,69 @@ void update_complaint_status_and_comment(struct Complain complaints[], int count
         return;
     }
 
-    // Prompt update
+    // Display complaint info
     system("cls");
     print_project_name();
     printCenter("Update Complaint Status and Comment\n", 11);
 
-    printf("Complaint ID : %s\n", complaints[found].cmpID);
-    printf("Current Status: %s\n", 
-        strcmp(complaints[found].status, "1") == 0 ? "Pending" :
-        strcmp(complaints[found].status, "2") == 0 ? "In Progress" :
-        strcmp(complaints[found].status, "3") == 0 ? "Resolved" : "Unknown");
-    printf("Current Comment: %s\n\n", complaints[found].comment);
+    printf("Complaint ID    : %s\n", complaints[found].cmpID);
+    printf("Student ID      : %s\n", complaints[found].studentID);
+    printf("Title           : %s\n", complaints[found].title);
+    printf("Department      : %s\n", complaints[found].team);
+
+    printf("Current Status  : ");
+    if (strcmp(complaints[found].status, "1") == 0) {
+        textColor(12); printf("Pending\n");
+    } else if (strcmp(complaints[found].status, "2") == 0) {
+        textColor(6); printf("In Progress\n");
+    } else if (strcmp(complaints[found].status, "3") == 0) {
+        textColor(10); printf("Resolved\n");
+    } else {
+        textColor(7); printf("Unknown\n");
+    }
+    textColor(7);
+    printf("Current Comment : %s\n\n", complaints[found].comment);
 
     printf("Select New Status:\n1. Pending\n2. In Progress\n3. Resolved\nEnter choice: ");
     int status_choice;
     scanf("%d", &status_choice);
+    getchar(); // clear newline
 
     if (status_choice >= 1 && status_choice <= 3) {
         sprintf(complaints[found].status, "%d", status_choice);
     }
 
-    getchar(); // clear newline
     char new_comment[100];
     printf("Enter Comment (max 100 chars): ");
     fgets(new_comment, sizeof(new_comment), stdin);
     new_comment[strcspn(new_comment, "\n")] = '\0';
-
     strcpy(complaints[found].comment, new_comment);
 
-    // Rewrite admin/all_complain.txt
+    // Update admin/all_complain.txt
     FILE *fp = fopen("admin/all_complain.txt", "w");
     for (int i = 0; i < count; i++) {
         fprintf(fp, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
-            complaints[i].cmpID,
-            complaints[i].studentID,
-            complaints[i].title,
-            complaints[i].team,
-            complaints[i].description,
-            complaints[i].status,
-            complaints[i].date,
-            complaints[i].time,
-            complaints[i].comment,
-            complaints[i].annonymous);
+                complaints[i].cmpID,
+                complaints[i].studentID,
+                complaints[i].title,
+                complaints[i].team,
+                complaints[i].description,
+                complaints[i].status,
+                complaints[i].date,
+                complaints[i].time,
+                complaints[i].comment,
+                complaints[i].annonymous);
     }
     fclose(fp);
 
-    // Rewrite respective student file
+    // Update student's individual file
     char stu_filename[100];
     sprintf(stu_filename, "students_complain/%s.txt", complaints[found].studentID);
+    struct Complain student_complaints[200];
+    int stu_count = 0;
+
     FILE *stu_fp = fopen(stu_filename, "r");
     if (stu_fp) {
-        struct Complain student_complaints[200];
-        int stu_count = 0;
         while (fscanf(stu_fp, "%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n\n",
                       student_complaints[stu_count].cmpID,
                       student_complaints[stu_count].title,
@@ -1203,40 +1196,40 @@ void update_complaint_status_and_comment(struct Complain complaints[], int count
                       student_complaints[stu_count].time,
                       student_complaints[stu_count].comment,
                       student_complaints[stu_count].annonymous) != EOF) {
+            strcpy(student_complaints[stu_count].studentID, complaints[found].studentID);
             stu_count++;
         }
         fclose(stu_fp);
-
-        // Update student complaint
-        for (int i = 0; i < stu_count; i++) {
-            if (strcmp(student_complaints[i].cmpID, cmp_id) == 0) {
-                strcpy(student_complaints[i].status, complaints[found].status);
-                strcpy(student_complaints[i].comment, complaints[found].comment);
-                break;
-            }
-        }
-
-        // Rewrite student file
-        stu_fp = fopen(stu_filename, "w");
-        for (int i = 0; i < stu_count; i++) {
-            fprintf(stu_fp, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
-                    student_complaints[i].cmpID,
-                    student_complaints[i].title,
-                    student_complaints[i].description,
-                    student_complaints[i].team,
-                    student_complaints[i].status,
-                    student_complaints[i].date,
-                    student_complaints[i].time,
-                    student_complaints[i].comment,
-                    student_complaints[i].annonymous);
-        }
-        fclose(stu_fp);
     }
+
+    for (int i = 0; i < stu_count; i++) {
+        if (strcmp(student_complaints[i].cmpID, cmp_id) == 0) {
+            strcpy(student_complaints[i].status, complaints[found].status);
+            strcpy(student_complaints[i].comment, complaints[found].comment);
+            break;
+        }
+    }
+
+    stu_fp = fopen(stu_filename, "w");
+    for (int i = 0; i < stu_count; i++) {
+        fprintf(stu_fp, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
+                student_complaints[i].cmpID,
+                student_complaints[i].title,
+                student_complaints[i].description,
+                student_complaints[i].team,
+                student_complaints[i].status,
+                student_complaints[i].date,
+                student_complaints[i].time,
+                student_complaints[i].comment,
+                student_complaints[i].annonymous);
+    }
+    fclose(stu_fp);
 
     printCenter("\nStatus and comment updated successfully!\n", 10);
     printCenter("Press any key to return...", 7);
     _getch();
 }
+
 
 // ================ END: update complaint status and comment ==================
 
@@ -1246,53 +1239,68 @@ void spacePrintAdmin(){
 }
 // ================== show complaint details by ID start ==================
 void show_complain_details_by_id_admin(struct Complain complaints[], int count, char cmp_id[]) {
-    int found = 0;
-    int i;
-    for (i = 0; i < count; i++) {
+    int found = -1;
+    for (int i = 0; i < count; i++) {
         if (strcmp(complaints[i].cmpID, cmp_id) == 0) {
-            system("cls");
-            print_project_name();
-            printCenter("Complaint Details\n", 11);
-
-            textColor(14);
-            printf("\n%-20s: ", "Complaint ID"); textColor(7); printf("%s\n", complaints[i].cmpID);
-            textColor(14);
-            printf("%-20s: ", "Student ID"); textColor(7); printf("%s\n", complaints[i].studentID);
-            textColor(14);
-            printf("%-20s: ", "Title"); textColor(7); printf("%s\n", complaints[i].title);
-            textColor(14);
-            printf("%-20s: ", "Department"); textColor(7); printf("%s\n", complaints[i].team);
-            textColor(14);
-            printf("%-20s: ", "Status");
-            if (strcmp(complaints[i].status, "1") == 0) { textColor(12); printf("Pending\n"); }
-            else if (strcmp(complaints[i].status, "2") == 0) { textColor(6); printf("In Progress\n"); }
-            else if (strcmp(complaints[i].status, "3") == 0) { textColor(10); printf("Resolved\n"); }
-            else { textColor(7); printf("Unknown\n"); }
-            textColor(14);
-            printf("%-20s: ", "Date"); textColor(7); printf("%s\n", complaints[i].date);
-            textColor(14);
-            printf("%-20s: ", "Time"); textColor(7); printf("%s\n", complaints[i].time);
-            textColor(14);
-            printf("%-20s: ", "Comment"); textColor(7); printf("%s\n", complaints[i].comment);
-            textColor(14);
-            printf("%-20s: ", "Anonymous"); textColor(7); printf("%s\n", (strcmp(complaints[i].annonymous, "y") == 0 ? "Yes" : "No"));
-            textColor(14);
-            printf("\n%-20s:\n", "Description"); textColor(7); printf("%s\n", complaints[i].description);
-
-            found = 1;
+            found = i;
             break;
         }
     }
 
-    if (!found) {
-        printCenter("\nComplaint not found.\n", 4);
+    if (found == -1) {
+        textColor(12); // Red
+        printCenter("Complaint not found.\n", 4);
+        textColor(7);
+        printCenter("Press any key to return...", 7);
+        _getch();
+        return;
     }
 
-    printCenter("\nPress any key to return...", 7);
-    _getch();
-    update_complaint_status_and_comment(complaints, count, complaints[i].cmpID);
+    system("cls");
+    print_project_name();
+    printCenter("Complaint Details\n", 11);
+
+    textColor(14);
+    printf("Complaint ID    : "); textColor(7); printf("%s\n", complaints[found].cmpID);
+    textColor(14);
+    printf("Student ID      : "); textColor(7); printf("%s\n", complaints[found].studentID);
+    textColor(14);
+    printf("Title           : "); textColor(7); printf("%s\n", complaints[found].title);
+    textColor(14);
+    printf("Team            : "); textColor(7); printf("%s\n", complaints[found].team);
+    textColor(14);
+    printf("Description     : "); textColor(7); printf("%s\n", complaints[found].description);
+    textColor(14);
+    printf("Status          : ");
+    if (strcmp(complaints[found].status, "1") == 0) { textColor(12); printf("Pending\n"); }
+    else if (strcmp(complaints[found].status, "2") == 0) { textColor(6); printf("In Progress\n"); }
+    else if (strcmp(complaints[found].status, "3") == 0) { textColor(10); printf("Resolved\n"); }
+    else { textColor(7); printf("Unknown\n"); }
+
+    textColor(14);
+    printf("Date            : "); textColor(7); printf("%s\n", complaints[found].date);
+    textColor(14);
+    printf("Time            : "); textColor(7); printf("%s\n", complaints[found].time);
+    textColor(14);
+    printf("Comment         : "); textColor(7); printf("%s\n", complaints[found].comment);
+    textColor(14);
+    printf("Anonymous       : "); textColor(7); printf("%s\n", complaints[found].annonymous);
+
+    printf("\n");
+    textColor(14);
+    printf("Do you want to update this complaint? (Y/N): ");
+    textColor(7);
+    char confirm;
+    scanf(" %c", &confirm);
+
+    if (confirm == 'Y' || confirm == 'y') {
+        update_complaint_status_and_comment(complaints, count, cmp_id);
+    } else {
+        printCenter("\nReturning to previous menu...", 6);
+        _getch();
+    }
 }
-// ================== show complaint details by ID end ==================
+
 
 // ================== filter complaints by department start ==================
 void filter_complaints_by_department(struct Complain complaints[], int count) {
@@ -1507,6 +1515,374 @@ void view_all_complain_admin() {
 }
 // ================== view all complain (admin) function end ==================
 
+// ================== Choice 2: View Complain by ID for Admin ==================
+void view_complaint_by_id_admin() {
+    FILE *fp = fopen("admin/all_complain.txt", "r");
+    if (fp == NULL) {
+        printCenter("No complaints found.\n", 4);
+        printCenter("Press any key to return...", 7);
+        _getch();
+        return;
+    }
+
+    struct Complain complaints[200];
+    int count = 0;
+
+    while (fscanf(fp, "%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n\n",
+                  complaints[count].cmpID,
+                  complaints[count].studentID,
+                  complaints[count].title,
+                  complaints[count].team,
+                  complaints[count].description,
+                  complaints[count].status,
+                  complaints[count].date,
+                  complaints[count].time,
+                  complaints[count].comment,
+                  complaints[count].annonymous) != EOF) {
+        count++;
+    }
+    fclose(fp);
+
+    char cmp_id[30];
+    printLeft("\nEnter Complaint ID to view details: ", 2);
+    getchar(); // clear newline
+    fgets(cmp_id, sizeof(cmp_id), stdin);
+    cmp_id[strcspn(cmp_id, "\n")] = '\0';
+
+    show_complain_details_by_id_admin(complaints, count, cmp_id);
+}
+
+// ================== Choice 3: Add Admin ==================
+void create_admin_account() {
+    system("cls");
+    print_project_name();
+    printCenter("Create Admin Account\n", 11);
+
+    struct Admin new_admin;
+    int last_id = 0;
+
+    // Detect the highest admin ID
+    FILE *read_fp = fopen("admin/admin_account.txt", "r");
+    if (read_fp != NULL) {
+        while (fscanf(read_fp, "%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^\n]\n",
+                      new_admin.name, new_admin.adminID, new_admin.email, new_admin.phone, new_admin.username, new_admin.password) == 6) {
+
+            // Extract the number part of admin ID
+            int current_id = 0;
+            if (sscanf(new_admin.adminID, "Admin_%d", &current_id) == 1) {
+                if (current_id > last_id) {
+                    last_id = current_id;
+                }
+            }
+        }
+        fclose(read_fp);
+    }
+
+    // Assign new ID
+    sprintf(new_admin.adminID, "Admin_%03d", last_id + 1);
+
+    // Get admin details
+    textColor(14); printf("Name         : "); textColor(7);
+    getchar();
+    fgets(new_admin.name, sizeof(new_admin.name), stdin);
+    new_admin.name[strcspn(new_admin.name, "\n")] = '\0';
+
+    textColor(14); printf("Email        : "); textColor(7);
+    fgets(new_admin.email, sizeof(new_admin.email), stdin);
+    new_admin.email[strcspn(new_admin.email, "\n")] = '\0';
+
+    textColor(14); printf("Phone Number : "); textColor(7);
+    fgets(new_admin.phone, sizeof(new_admin.phone), stdin);
+    new_admin.phone[strcspn(new_admin.phone, "\n")] = '\0';
+
+    while (1) {
+        textColor(14); printf("Username     : "); textColor(7);
+        fgets(new_admin.username, sizeof(new_admin.username), stdin);
+        new_admin.username[strcspn(new_admin.username, "\n")] = '\0';
+
+        // Check if username already exists
+        int is_duplicate = 0;
+        FILE *check_fp = fopen("admin/admin_account.txt", "r");
+        if (check_fp != NULL) {
+            char temp_name[100], temp_id[20], temp_email[100], temp_phone[20], temp_username[30], temp_pass[30];
+            while (fscanf(check_fp, "%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^\n]\n",
+                          temp_name, temp_id, temp_email, temp_phone, temp_username, temp_pass) == 6) {
+                if (strcmp(temp_username, new_admin.username) == 0) {
+                    is_duplicate = 1;
+                    break;
+                }
+            }
+            fclose(check_fp);
+        }
+
+        if (is_duplicate) {
+            textColor(12);
+            printf("Username already exists. Please choose another one.\n");
+            textColor(7);
+        } else {
+            break;
+        }
+    }
+
+    textColor(14); printf("Password     : "); textColor(7);
+    fgets(new_admin.password, sizeof(new_admin.password), stdin);
+    new_admin.password[strcspn(new_admin.password, "\n")] = '\0';
+
+    password_encrypt(new_admin.password);
+
+    FILE *fp = fopen("admin/admin_account.txt", "a");
+    if (fp == NULL) {
+        textColor(12);
+        printCenter("Failed to open admin_account.txt\n", 12);
+        textColor(7);
+        return;
+    }
+
+    fprintf(fp, "%s|%s|%s|%s|%s|%s\n",
+            new_admin.name,
+            new_admin.adminID,
+            new_admin.email,
+            new_admin.phone,
+            new_admin.username,
+            new_admin.password);
+
+    fclose(fp);
+
+    textColor(10);
+    printCenter("\nAdmin account created successfully!\n", 10);
+    textColor(14); printf("Generated Admin ID: "); textColor(11); printf("%s\n", new_admin.adminID); textColor(7);
+    printCenter("Press any key to return...", 7);
+    _getch();
+}
+
+
+
+void view_student_details_with_id() {
+    system("cls");
+    print_project_name();
+    printCenter("View Student Details by ID\n", 11);
+    printCenter("---------------------------------------------------\n", 9);
+
+    char id[20];
+    textColor(14);
+    printf("Enter Student ID to view details: ");
+    textColor(7);
+    scanf("%s", id);
+
+    int found = binary_search_on_students_data(id);
+    if (found == -1) {
+        textColor(12); // Red for error
+        printCenter("Student not found.\n", 12);
+        textColor(7);
+        printCenter("Press any key to return...", 7);
+        _getch();
+        return;
+    }
+
+    struct Student s = students_data[found];
+
+    // Count complaints
+    int complaint_count = 0;
+    char filename[100], buffer[500];
+    sprintf(filename, "students_complain/%s.txt", id);
+    FILE *fp = fopen(filename, "r");
+    if (fp != NULL) {
+        while (fgets(buffer, sizeof(buffer), fp)) {
+            if (strcmp(buffer, "\n") == 0)
+                complaint_count++;
+        }
+        fclose(fp);
+    }
+
+    // Header
+    spacePrintProfile(); textColor(11);
+    for (int i = 0; i < 70; i++) printf("=");
+    printf("\n");
+
+    spacePrintProfile(); textColor(11);
+    printf("|%-25s", "");
+    textColor(10);
+    printf("PROFILE INFORMATION");
+    textColor(11); printf("%-24s|\n", "");
+
+    spacePrintProfile(); textColor(11);
+    for (int i = 0; i < 70; i++) printf("=");
+    printf("\n");
+
+    // Profile details
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Student ID");     
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.id);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Name");           
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.name);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Section");        
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.section);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Department");     
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.dept);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Mobile Number");  
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.mobile);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Email");          
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.email);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Date of Birth");  
+    textColor(15); printf(" : "); textColor(11); printf("%-43s |\n", s.dob);
+
+    spacePrintProfile(); textColor(14); printf("| %-20s", "Total Complaints");  
+    textColor(15); printf(" : "); textColor(11); printf("%-43d |\n", complaint_count);
+
+    spacePrintProfile(); textColor(11);
+    for (int i = 0; i < 70; i++) printf("=");
+    printf("\n");
+
+    textColor(10); 
+    printCenter("\nPress any key to return to the dashboard...", 7);
+    textColor(7);
+    _getch();
+}
+
+
+void create_department_user() {
+    system("cls");
+    print_project_name();
+    printCenter("Create Department User\n", 11);
+
+    // Show available department codes
+    textColor(14);
+    printf("\nAvailable Department Codes:\n");
+    printf(" IT    - IT Section\n");
+    printf(" CSE   - Dept. Of CSE\n");
+    printf(" SWE   - Dept. Of SWE\n");
+    printf(" BLC   - BLC Support Team\n");
+    printf(" FIN   - Finance and Accounts Team\n");
+    printf(" TRN   - Transport Management Team\n");
+    printf(" HALL  - Hall Authority\n");
+    printf(" SA    - Student Affairs\n");
+    textColor(7);
+
+    // Get department code input
+    char deptCode[10], fileName[100];
+    textColor(14);
+    printf("\nEnter Department Code (e.g., IT, CSE, SWE): ");
+    textColor(7);
+    scanf("%s", deptCode);
+
+    // Build file path
+    sprintf(fileName, "others_dept/login_info/%s.txt", deptCode);
+
+    //  Count existing users and check username uniqueness
+    int userCount = 0;
+    char existing_username[30], buffer[300];
+    FILE *read_fp = fopen(fileName, "r");
+    if (read_fp == NULL) {
+        // Create file if it doesn't exist
+        read_fp = fopen(fileName, "w");
+        if (read_fp == NULL) {
+            textColor(12);
+            printf("Could not create department file.\n");
+            textColor(7);
+            return;
+        }
+        fclose(read_fp);
+        read_fp = fopen(fileName, "r");
+    }
+
+    char existing_line[300];
+    char existing_name[50], existing_id[20], existing_role[50], existing_email[50], existing_mobile[20];
+    char username_check[30];
+    getchar(); // flush newline
+
+    //Take input except password and username first
+    char name[50], role[50], email[50], mobile[20], username[30], password[30];
+
+    textColor(14); printf("Full Name     : "); textColor(7); fgets(name, sizeof(name), stdin); name[strcspn(name, "\n")] = '\0';
+    textColor(14); printf("Role          : "); textColor(7); fgets(role, sizeof(role), stdin); role[strcspn(role, "\n")] = '\0';
+    textColor(14); printf("Email         : "); textColor(7); fgets(email, sizeof(email), stdin); email[strcspn(email, "\n")] = '\0';
+    textColor(14); printf("Mobile        : "); textColor(7); fgets(mobile, sizeof(mobile), stdin); mobile[strcspn(mobile, "\n")] = '\0';
+
+    // Check for duplicate username
+    int is_duplicate = 0;
+    do {
+        is_duplicate = 0;
+        textColor(14); printf("Username      : "); textColor(7);
+        fgets(username, sizeof(username), stdin);
+        username[strcspn(username, "\n")] = '\0';
+
+        rewind(read_fp);
+        while (fgets(existing_line, sizeof(existing_line), read_fp)) {
+            if (sscanf(existing_line, "%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%s", 
+                existing_name, existing_id, existing_role, existing_email, existing_mobile, username_check, password) == 7) {
+                if (strcmp(username, username_check) == 0) {
+                    textColor(12);
+                    printf("❌ Username already exists! Please enter a different one.\n");
+                    textColor(7);
+                    is_duplicate = 1;
+                    break;
+                }
+            }
+        }
+    } while (is_duplicate);
+
+    fclose(read_fp);
+
+    // Get and encrypt password
+    textColor(14); printf("Password      : "); textColor(7);
+    input_hidden_password(password);
+    password_encrypt(password);
+
+    // Generate User ID
+    sprintf(fileName, "others_dept/login_info/%s.txt", deptCode);
+    read_fp = fopen(fileName, "r");
+    userCount = 0;
+
+    char userId[20];
+    sprintf(userId, "%s%03d", deptCode, userCount + 1);
+
+    // Write new user to file
+    FILE *write_fp = fopen(fileName, "a");
+    if (write_fp == NULL) {
+        textColor(12);
+        printCenter("\nError: Could not open the department login file for writing.\n", 12);
+        textColor(7);
+        return;
+    }
+
+    fprintf(write_fp, "%s|%s|%s|%s|%s|%s|%s\n", name, userId, role, email, mobile, username, password);
+    fclose(write_fp);
+
+    // Success message
+    textColor(10);
+    printCenter("\n✅ Department user created successfully!\n", 10);
+    textColor(14); printf("Generated User ID: "); textColor(11); printf("%s\n", userId);
+    textColor(7);
+
+    printCenter("Press any key to return...", 7);
+    _getch();
+}
+
+
+
+
+
+// ================== admin logout ==================
+void admin_logout() {
+    system("cls");
+    print_project_name();
+    printCenter("Admin Logout\n", 11);
+    printCenter("---------------------------------------------------\n", 9);
+
+    textColor(10);
+    Sleep(3000);
+    printCenter("You have been successfully logged out.\n", 10);
+    textColor(7);
+
+    printCenter("Press any key to return to the main menu...", 7);
+    _getch();
+}
+
 
 
 // ========== ADMIN DASHBOARD ==========
@@ -1517,11 +1893,12 @@ void admin_dashboard() {
         print_project_name();
         printCenter("Admin Dashboard\n", 10);
         printCenter("----------------------------------------------\n", 9);
-        printCenter("1. View All Complaints (Filter)\n", 11);
+        printCenter("1. View All Complaints (With Filter)\n", 11);
         printCenter("2. Track Complaint by ID\n", 11);
-        printCenter("3. Add Admin\n", 11);
-        printCenter("4. Add Team User\n", 11);
-        printCenter("5. Logout\n", 11);
+        printCenter("3. Create Admin Account\n", 11);
+        printCenter("4. Create Department User\n", 11);
+        printCenter("5. View Student Details with Id\n", 11);
+        printCenter("6. Logout\n", 11);
         printLeft("Enter your choice: ", 2);
         scanf("%d", &choice);
 
@@ -1530,15 +1907,19 @@ void admin_dashboard() {
                 view_all_complain_admin();
                 break;
             case 2:
-                // track_complaint_by_id();
+                view_complaint_by_id_admin();
                 break;
             case 3:
-                // add_admin();
+                create_admin_account();
                 break;
             case 4:
-                // add_team_user();
+                create_department_user();
                 break;
             case 5:
+                view_student_details_with_id();
+                break;
+            case 6:
+                admin_logout();
                 return; // logout
         }
     } while (1);
@@ -1547,35 +1928,53 @@ void admin_dashboard() {
 // admin utitily functions 
 void load_admins() {
     admin_count = 0;
-    FILE *fp = fopen("admin/admin_login.txt", "r");
+    FILE *fp = fopen("admin/admin_account.txt", "r");
     if (fp == NULL) {
-        printf("Admin file not found!\n");
+        printf("Admin account file not found!\n");
         return;
     }
-    while (fscanf(fp, "%[^|]|%[^\n]\n", admins[admin_count].username, admins[admin_count].password) != EOF) {
+
+    while (fscanf(fp, "%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^\n]\n",
+                  admins[admin_count].name,
+                  admins[admin_count].adminID,
+                  admins[admin_count].email,
+                  admins[admin_count].phone,
+                  admins[admin_count].username,
+                  admins[admin_count].password) == 6) {
+
+        // Decrypt password before storing
+        password_decrypt(admins[admin_count].password);
+
         admin_count++;
+        if (admin_count >= 100) break; // prevent overflow
     }
+
     fclose(fp);
 }
+
 // ========== ADMIN LOGIN ==========
-void admin_login(){
+void admin_login() {
     system("cls");
     print_project_name();
     printCenter("Admin Login\n", 12);
     printCenter("---------------------------------------------------\n", 9);
+
     char username[30], password[30];
 
     printLeft("Enter Username: ", 15);
     scanf("%s", username);
+
     printLeft("Enter Password: ", 15);
     input_hidden_password(password);
 
     load_admins();
+
     for (int i = 0; i < admin_count; i++) {
         if (strcmp(admins[i].username, username) == 0 && strcmp(admins[i].password, password) == 0) {
+            strcpy(current_logged_admin, username);
             printCenter("Login successful! Redirecting to dashboard...\n", 10);
-            Sleep(3000);
-            admin_dashboard();
+            Sleep(2000);
+            admin_dashboard(); 
             return;
         }
     }
@@ -1584,34 +1983,156 @@ void admin_login(){
     Sleep(2000);
 }
 
+
+
+// ======================= Others Dept ==========================
+void department_login(const char *dept_code) {
+    system("cls");
+    print_project_name();
+
+    char file_path[100];
+    sprintf(file_path, "others_dept/login_info/%s.txt", dept_code);
+
+    FILE *fp = fopen(file_path, "r");
+    if (fp == NULL) {
+        textColor(12);
+        printCenter("Error: Department login file not found!\n", 12);
+        textColor(7);
+        _getch();
+        return;
+    }
+
+    char username[30], password[30];
+    char stored_name[50], stored_id[20], stored_role[50], stored_email[50], stored_mobile[20];
+    char stored_username[30], stored_password[30];
+
+    textColor(14); printf("Enter Username: "); textColor(7);
+    scanf("%s", username);
+    textColor(14); printf("Enter Password: "); textColor(7);
+    input_hidden_password(password);
+
+    int success = 0;
+    while (fscanf(fp, "%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^|]|%[^\n]\n",
+                  stored_name, stored_id, stored_role, stored_email, stored_mobile,
+                  stored_username, stored_password) == 7) {
+
+        password_decrypt(stored_password);
+
+        if (strcmp(username, stored_username) == 0 && strcmp(password, stored_password) == 0) {
+            success = 1;
+            break;
+        }
+    }
+    fclose(fp);
+
+    if (success) {
+        textColor(10);
+        printCenter("\nLogin Successful! Redirecting to Department Dashboard...\n", 10);
+        textColor(7);
+        Sleep(2000);
+        department_dashboard(dept_code);
+    } else {
+        textColor(12);
+        printCenter("\nInvalid Username or Password. Please try again.\n", 12);
+        textColor(7);
+        Sleep(2000);
+    }
+}
+
+
+
+
 // ========== Main function start ==========
 int main() {
     int choice;
     do {
         system("cls");
         print_project_name();
-        printCenter("1. Student Login\n", 3);
-        printCenter("2. Admin Login\n", 4);
-        printCenter("3. Academic Cell Login\n", 5);
-        printCenter("4. Hall Authority Login\n", 6);
-        printCenter("5. IT Cell Login\n", 7);
-        printCenter("6. Accounts Section Login\n", 8);
-        printCenter("0. EXIT...\n", 9);
 
-        printf("Enter Choice: ");
+        printCenter(" 1. Student Login\n", 3);
+        printCenter(" 2. Admin Login\n", 4);
+        printCenter(" 3. Other Department Login\n", 6);
+        printCenter(" 0. EXIT...\n", 9);
+
+        textColor(14);
+        printf("\nEnter Choice: ");
+        textColor(7);
         scanf("%d", &choice);
 
         switch (choice) {
             case 1:
-                student_login_reg(); break;
+                student_login_reg();
+                break;
             case 2:
-                admin_login(); break;
+                admin_login();
+                break;
+            case 3: {
+                int sub_choice;
+                do {
+                    system("cls");
+                    print_project_name();
+                    printCenter("Select Department Login\n", 11);
+                    printCenter(" 01. Hall Authority            \n", 11);
+                    printCenter(" 02. IT Section                \n", 11);
+                    printCenter(" 03. Dept. Of CSE              \n", 11);
+                    printCenter(" 04. Dept. Of SWE              \n", 11);
+                    printCenter(" 05. BLC Support Team          \n", 11);
+                    printCenter(" 06. Finance and Accounts Team\n", 11);
+                    printCenter(" 07. Transport Management Team\n", 11);
+                    printCenter(" 0. Back\n", 11);
+
+                    textColor(14);
+                    printf("\nEnter Department Choice: ");
+                    textColor(7);
+                    scanf("%d", &sub_choice);
+
+                    switch (sub_choice) {
+                        case 1:
+                            department_login("HALL"); break;
+                        case 2:
+                            department_login("IT"); break;
+                        case 3:
+                            department_login("CSE"); break;
+                        case 4:
+                            department_login("SWE"); break;
+                        case 5:
+                            department_login("BLC"); break;
+                        case 6:
+                            department_login("FIN"); break;
+                        case 7:
+                            department_login("TRN"); break;
+                        case 0:
+                            break;
+                        default:
+                            textColor(12);
+                            printf("Invalid choice! Try again.\n");
+                            textColor(7);
+                            Sleep(1500);
+                            break;
+                    }
+                } while (sub_choice != 0);
+                break;
+            }
+
+            case 0:
+                textColor(10);
+                printf("\nExiting the system. Goodbye!\n");
+                textColor(7);
+                break;
+
+            default:
+                textColor(12);
+                printf("Invalid choice! Please try again.\n");
+                textColor(7);
+                Sleep(1500);
+                break;
         }
 
     } while (choice != 0);
 
     return 0;
 }
+
 
 
 // ========== Main function start ==========

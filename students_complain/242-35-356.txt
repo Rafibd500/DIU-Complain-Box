@@ -1,10 +1,60 @@
-CMP-13082025-0001
-IT section problem title
-projector not working.dksfkdhfkhdkf
+CMP-31072025-0014
+Water leakage in Hall 2 bathroom
+Continuous water leakage reported in Hall 2, making the area slippery.
+Hall Authority
+1
+30/07/2025
+09:00 AM
+again pending
+y
+
+CMP-31072025-0015
+Internet down in Admin Building
+Wi-Fi network unavailable since morning in entire building.
 IT Section
 2
-13/08/2025
-08:55 PM
-Reported
+30/07/2025
+10:00 AM
+Network team dispatched to troubleshoot.
+n
+
+CMP-31072025-0016
+Incorrect name on degree certificate
+Student reported spelling mistake in issued certificate.
+Registrar Office
+3
+30/07/2025
+11:00 AM
+Verification in progress.
+y
+
+CMP-31072025-0017
+Unresponsive student portal
+Login failure and blank dashboard on student portal.
+Registrar Office
+3
+30/07/2025
+12:00 PM
+Backend server being checked.
+n
+
+CMP-31072025-0018
+Room allocation confusion for new students
+Several students got duplicate room allocations.
+Hall Authority
+1
+30/07/2025
+01:00 PM
+Issue being resolved with updated allocation list.
+y
+
+CMP-31072025-0019
+Computer lab PCs not turning on
+Half of Lab 2 PCs not powering up before morning class.
+Dept. Of CSE
+2
+31/07/2025
+08:00 AM
+Lab technician informed.
 n
 
