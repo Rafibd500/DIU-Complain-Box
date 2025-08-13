@@ -82,6 +82,19 @@ struct Complain{
 struct Complain all_complains[MAX_COMPLAIN];
 
 
+
+struct Admin {
+    char username[30];
+    char password[30];
+};
+
+struct Admin admins[100];
+int admin_count = 0;
+
+
+
+
+
 //========== text styling and alignment start ==========
 void textColor(int colorCode) {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), colorCode);
@@ -297,6 +310,11 @@ void sort_student_login_info(){
 }
 
 
+
+
+
+
+
 // ================== student registration / Login choice page start ==================
 void student_login_reg()
 {
@@ -474,7 +492,7 @@ void student_login(){
     input_hidden_password(password);
     load_logged_student_data();
     int found1 = binary_search_on_students_login(id);
-    if(found1 != 0){ 
+    if(found1 != -1){ 
         if(strcmp(students_login_info[found1].id, id) == 0){
             char decrypt_pass[20];
             strcpy(decrypt_pass, students_login_info[found1].password);
@@ -484,7 +502,7 @@ void student_login(){
                 printCenterCustom("Welcome, ", 10);
                 textColor(10);
                 printf("%s! Login Successful. Redirecting to Student Dashboard...\n", students_data[found].name, 10);
-                strcmp(current_logged_student, students_login_info[found1].id);
+                strcpy(current_logged_student, students_login_info[found1].id);
                 textColor(7); // Reset color
                 Sleep(4000);
                 student_dashboard(id);
@@ -602,7 +620,6 @@ void take_complain(char id[], int choice){
     char* cmpID = generate_complain_ID();
     strcpy(student_complain.cmpID, cmpID);
     strcpy(student_complain.status, "1");
-    
 
     ///////================ FOR TIME===============
     time_t t;
@@ -615,13 +632,15 @@ void take_complain(char id[], int choice){
 
     strftime(time_str, sizeof(time_str), "%I:%M %p", tm_info);
     strftime(date_str, sizeof(date_str), "%d/%m/%Y", tm_info);
-    //printf("%s %s\n", time_str, date_str);
 
     strcpy(student_complain.time, time_str);
     strcpy(student_complain.date, date_str);
     strcpy(student_complain.comment, "N/A");
     if(annonymous) strcpy(student_complain.annonymous, "y");
     else strcpy(student_complain.annonymous, "n");
+
+    strcpy(student_complain.studentID, id); // Add student ID to complaint
+
     printCenter("\nComplaint submitted successfully!\nYour complaint has been recorded. You will be notified upon status updates.\n", 10);
     printf("Press any key to continue....");
     _getch();
@@ -641,9 +660,27 @@ void take_complain(char id[], int choice){
         student_complain.annonymous
     );
     fclose(studnetFp);
+
+    // Write to admin file as well
+    FILE* adminFp = fopen("admin/all_complain.txt", "a");
+    if (adminFp != NULL) {
+        fprintf(adminFp, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
+            student_complain.cmpID,
+            student_complain.studentID,
+            student_complain.title,
+            student_complain.team,
+            student_complain.description,
+            student_complain.status,
+            student_complain.date,
+            student_complain.time,
+            student_complain.comment,
+            student_complain.annonymous
+        );
+        fclose(adminFp);
+    }
+
     free(cmpID);
     annonymous = 0;
-    
 }
 // ================== take complain fucntion end ==================
 
@@ -732,6 +769,7 @@ void show_complain_details_by_id(struct Complain complaints[], int count, char c
     _getch();
 }
 
+
 void view_all_complain(char id[]) {
     system("cls");
     print_project_name();
@@ -773,7 +811,9 @@ void view_all_complain(char id[]) {
         print_project_name();
         printCenter("All Complaints\n", 10);
         printCenter("---------------------------------------------------\n", 9);
-
+        int found = binary_search_on_students_data(id);
+        textColor(14);
+        printf("User: %s(%s)                                                                                                                                                       Role:Student\n\n", students_data[found].name, students_data[found].id);        textColor(7);
         spacePrint();
         printf("| %-25s | %-40s | %-25s | %-15s | %-15s |\n", 
                "Complain ID", "Title", "Team", "Status", "Issued Date");
@@ -823,7 +863,6 @@ void view_all_complain(char id[]) {
             else if (filter_choice == 2) strcpy(status_filter, "2");
             else if (filter_choice == 3) strcpy(status_filter, "3");
             else if (filter_choice == 4) filter_anon = 1;
-
             // display filtered complaints
             system("cls");
             print_project_name();
@@ -834,7 +873,8 @@ void view_all_complain(char id[]) {
                 else if (strcmp(status_filter, "2") == 0) printCenter("Filtered by: In Progress\n", 11);
                 else if (strcmp(status_filter, "3") == 0) printCenter("Filtered by: Resolved\n", 11);
             }
-
+            textColor(14);
+            printf("User: %s(%s)                                                                                                                                                       Role:Student\n\n", students_data[found].name, students_data[found].id);        textColor(7);
             spacePrint();
             printf("| %-25s | %-40s | %-25s | %-15s | %-15s |\n", "Complain ID", "Title", "Team", "Status", "Issued Date");
             spacePrint();
@@ -892,45 +932,11 @@ void view_all_complain(char id[]) {
     } while (filter_choice != 0);
 }
 
-
-
 // ================== view all complain end ==================
 
-// ================== view my complain start ==================
-void view_my_complain(char id[]){
-    int choice;
-    do{
-        system("cls");
-        print_project_name();
-        printCenter("View My Complain\n", 10);
-        printCenter("---------------------------------------------------\n", 9);
-        int found = binary_search_on_students_data(id);
-        textColor(14);
-        printf("User: %s(%s)                                                                                                                                                       Role:Student\n", students_data[found].name, students_data[found].id);        textColor(7);
-        printCenter("01. View All Complaints\n", 11);
-        printCenter("02. View Complaint by Date\n", 11);
-        printCenter("0. Back to Main Menu\n", 11);
-        printLeft("Enter Your Choice: ", 2);
-        scanf("%d", &choice);
 
-        switch (choice) {
-            case 1:
-                view_all_complain(id);
-                break;
-            case 2:
-                // view_complain_by_date(id);
-                break;
-            case 0:
-                return; // Go back to main menu
-            default:
-                printCenter("Invalid choice. Try again.\n", 12);
-                break;
-        }
-    } while (1);
-    Sleep(5000);
-    return;
-}
-// ================== view my complain end ==================
+
+
 
 // ================== track complain by complain ID start ==================
 void track_complain_by_complainID(char id[]){
@@ -1048,23 +1054,38 @@ void my_profile(char id[]) {
 
 
 // ================== student logout start ==================
-void student_logout(char id[]){
+void student_logout(char id[]) {
     system("cls");
     print_project_name();
     printCenter("Logout\n", 10);
     printCenter("---------------------------------------------------\n", 9);
-    printf("Press any key....");
+
+    // Clear the logged student variable
+    strcpy(current_logged_student, "");
+
+    printCenter("You have been logged out successfully.\n", 10);
+    printCenter("Press any key to return to the main menu...", 11);
     _getch();
+
+    return; // Go back to main()
 }
+
 // ================== student logout end ==================
 
 
 
 
 // ================== student dashboard start ==================
-void student_dashboard(char id[]){
+void student_dashboard(char id[]) {
+    if (strcmp(current_logged_student, "") == 0) {
+        printCenter("Access denied. Please login first.\n", 12);
+        printCenter("Press any key to return to main menu...", 4);
+        _getch();
+        return;
+    }
+
     int choice;
-    do{
+    do {
         system("cls");
         print_project_name();
         printCenter("Student Dashboard\n", 10);
@@ -1080,60 +1101,493 @@ void student_dashboard(char id[]){
         printCenter("6. Logout                     \n", 11);
         printLeft("Enter Your Choice: ", 2);
         scanf("%d", &choice);
-        
-        switch (choice){
-        case 1:
-            submit_new_complain(id);
-            break;
-        case 2:
-            submit_annonymus_complain(id);
-            break;
-        case 3:
-            view_my_complain(id);
-            break;
-        case 4:
-            track_complain_by_complainID(id);
-            break;
-        case 5:
-            my_profile(id);
-            break;
-        case 6:
-            student_logout(id);
-            break;
-        default:
-            printCenter("Invalid choice. Try again\n", 12);
-            break;
-        }
 
-    }while(choice != 0);
-    Sleep(5000);
-    return;
+        switch (choice) {
+            case 1:
+                submit_new_complain(id); break;
+            case 2:
+                submit_annonymus_complain(id); break;
+            case 3:
+                view_all_complain(id); break;
+            case 4:
+                track_complain_by_complainID(id); break;
+            case 5:
+                my_profile(id); break;
+            case 6:
+                student_logout(id); return; // Logout and return to main()
+            case 0:
+                return; // Back to main menu
+        }
+    } while (1);
 }
+
 // ================== student dashboard end ==================
 
 
+// ================== update complaint status and comment (admin) ==================
+void update_complaint_status_and_comment(struct Complain complaints[], int count, char cmp_id[]) {
+    int found = -1;
+    for (int i = 0; i < count; i++) {
+        if (strcmp(complaints[i].cmpID, cmp_id) == 0) {
+            found = i;
+            break;
+        }
+    }
 
+    if (found == -1) {
+        printCenter("Complaint not found.\n", 4);
+        printCenter("Press any key to return...", 7);
+        _getch();
+        return;
+    }
+
+    // Prompt update
+    system("cls");
+    print_project_name();
+    printCenter("Update Complaint Status and Comment\n", 11);
+
+    printf("Complaint ID : %s\n", complaints[found].cmpID);
+    printf("Current Status: %s\n", 
+        strcmp(complaints[found].status, "1") == 0 ? "Pending" :
+        strcmp(complaints[found].status, "2") == 0 ? "In Progress" :
+        strcmp(complaints[found].status, "3") == 0 ? "Resolved" : "Unknown");
+    printf("Current Comment: %s\n\n", complaints[found].comment);
+
+    printf("Select New Status:\n1. Pending\n2. In Progress\n3. Resolved\nEnter choice: ");
+    int status_choice;
+    scanf("%d", &status_choice);
+
+    if (status_choice >= 1 && status_choice <= 3) {
+        sprintf(complaints[found].status, "%d", status_choice);
+    }
+
+    getchar(); // clear newline
+    char new_comment[100];
+    printf("Enter Comment (max 100 chars): ");
+    fgets(new_comment, sizeof(new_comment), stdin);
+    new_comment[strcspn(new_comment, "\n")] = '\0';
+
+    strcpy(complaints[found].comment, new_comment);
+
+    // Rewrite admin/all_complain.txt
+    FILE *fp = fopen("admin/all_complain.txt", "w");
+    for (int i = 0; i < count; i++) {
+        fprintf(fp, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
+            complaints[i].cmpID,
+            complaints[i].studentID,
+            complaints[i].title,
+            complaints[i].team,
+            complaints[i].description,
+            complaints[i].status,
+            complaints[i].date,
+            complaints[i].time,
+            complaints[i].comment,
+            complaints[i].annonymous);
+    }
+    fclose(fp);
+
+    // Rewrite respective student file
+    char stu_filename[100];
+    sprintf(stu_filename, "students_complain/%s.txt", complaints[found].studentID);
+    FILE *stu_fp = fopen(stu_filename, "r");
+    if (stu_fp) {
+        struct Complain student_complaints[200];
+        int stu_count = 0;
+        while (fscanf(stu_fp, "%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n\n",
+                      student_complaints[stu_count].cmpID,
+                      student_complaints[stu_count].title,
+                      student_complaints[stu_count].description,
+                      student_complaints[stu_count].team,
+                      student_complaints[stu_count].status,
+                      student_complaints[stu_count].date,
+                      student_complaints[stu_count].time,
+                      student_complaints[stu_count].comment,
+                      student_complaints[stu_count].annonymous) != EOF) {
+            stu_count++;
+        }
+        fclose(stu_fp);
+
+        // Update student complaint
+        for (int i = 0; i < stu_count; i++) {
+            if (strcmp(student_complaints[i].cmpID, cmp_id) == 0) {
+                strcpy(student_complaints[i].status, complaints[found].status);
+                strcpy(student_complaints[i].comment, complaints[found].comment);
+                break;
+            }
+        }
+
+        // Rewrite student file
+        stu_fp = fopen(stu_filename, "w");
+        for (int i = 0; i < stu_count; i++) {
+            fprintf(stu_fp, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n\n",
+                    student_complaints[i].cmpID,
+                    student_complaints[i].title,
+                    student_complaints[i].description,
+                    student_complaints[i].team,
+                    student_complaints[i].status,
+                    student_complaints[i].date,
+                    student_complaints[i].time,
+                    student_complaints[i].comment,
+                    student_complaints[i].annonymous);
+        }
+        fclose(stu_fp);
+    }
+
+    printCenter("\nStatus and comment updated successfully!\n", 10);
+    printCenter("Press any key to return...", 7);
+    _getch();
+}
+
+// ================ END: update complaint status and comment ==================
+
+void spacePrintAdmin(){
+    int width = getConsoleWidth();
+    for(int i=0; i<width/5; i++) printf(" ");
+}
+// ================== show complaint details by ID start ==================
+void show_complain_details_by_id_admin(struct Complain complaints[], int count, char cmp_id[]) {
+    int found = 0;
+    int i;
+    for (i = 0; i < count; i++) {
+        if (strcmp(complaints[i].cmpID, cmp_id) == 0) {
+            system("cls");
+            print_project_name();
+            printCenter("Complaint Details\n", 11);
+
+            textColor(14);
+            printf("\n%-20s: ", "Complaint ID"); textColor(7); printf("%s\n", complaints[i].cmpID);
+            textColor(14);
+            printf("%-20s: ", "Student ID"); textColor(7); printf("%s\n", complaints[i].studentID);
+            textColor(14);
+            printf("%-20s: ", "Title"); textColor(7); printf("%s\n", complaints[i].title);
+            textColor(14);
+            printf("%-20s: ", "Department"); textColor(7); printf("%s\n", complaints[i].team);
+            textColor(14);
+            printf("%-20s: ", "Status");
+            if (strcmp(complaints[i].status, "1") == 0) { textColor(12); printf("Pending\n"); }
+            else if (strcmp(complaints[i].status, "2") == 0) { textColor(6); printf("In Progress\n"); }
+            else if (strcmp(complaints[i].status, "3") == 0) { textColor(10); printf("Resolved\n"); }
+            else { textColor(7); printf("Unknown\n"); }
+            textColor(14);
+            printf("%-20s: ", "Date"); textColor(7); printf("%s\n", complaints[i].date);
+            textColor(14);
+            printf("%-20s: ", "Time"); textColor(7); printf("%s\n", complaints[i].time);
+            textColor(14);
+            printf("%-20s: ", "Comment"); textColor(7); printf("%s\n", complaints[i].comment);
+            textColor(14);
+            printf("%-20s: ", "Anonymous"); textColor(7); printf("%s\n", (strcmp(complaints[i].annonymous, "y") == 0 ? "Yes" : "No"));
+            textColor(14);
+            printf("\n%-20s:\n", "Description"); textColor(7); printf("%s\n", complaints[i].description);
+
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) {
+        printCenter("\nComplaint not found.\n", 4);
+    }
+
+    printCenter("\nPress any key to return...", 7);
+    _getch();
+    update_complaint_status_and_comment(complaints, count, complaints[i].cmpID);
+}
+// ================== show complaint details by ID end ==================
+
+// ================== filter complaints by department start ==================
+void filter_complaints_by_department(struct Complain complaints[], int count) {
+    char dept[30];
+
+    system("cls");
+    print_project_name();
+    printCenter("Filter by Department\n", 11);
+    printLeft("Enter Department Name (exact match): ", 2);
+    getchar();
+    fgets(dept, sizeof(dept), stdin);
+    dept[strcspn(dept, "\n")] = '\0';
+
+    system("cls");
+    print_project_name();
+    printf("Filtered by Department: %s\n\n", dept);
+    spacePrintAdmin();
+    printf("| %-15s | %-15s | %-25s | %-20s | %-15s | %-10s |\n",
+           "Complain ID", "Student ID", "Title", "Team", "Status", "Date");
+    spacePrintAdmin();
+    for (int i = 0; i < 110; i++) printf("-");
+    printf("\n");
+
+    int hits = 0;
+    for (int i = 0; i < count; i++) {
+        if (strcmp(complaints[i].team, dept) == 0) {
+            char shortTitle[26];
+            if (strlen(complaints[i].title) > 23) {
+                strncpy(shortTitle, complaints[i].title, 22);
+                shortTitle[22] = '.'; shortTitle[23] = '.'; shortTitle[24] = '.'; shortTitle[25] = '\0';
+            } else {
+                strcpy(shortTitle, complaints[i].title);
+            }
+
+            spacePrintAdmin();
+            printf("| %-15s | %-15s | %-25s | %-20s | ",
+                   complaints[i].cmpID, complaints[i].studentID, shortTitle, complaints[i].team);
+
+            if (strcmp(complaints[i].status, "1") == 0) { textColor(12); printf("%-15s", "Pending"); }
+            else if (strcmp(complaints[i].status, "2") == 0) { textColor(6); printf("%-15s", "In Progress"); }
+            else if (strcmp(complaints[i].status, "3") == 0) { textColor(10); printf("%-15s", "Resolved"); }
+            else { textColor(7); printf("%-15s", "Unknown"); }
+            textColor(7);
+
+            printf(" | %-10s |\n", complaints[i].date);
+            hits++;
+        }
+    }
+
+    if (!hits) {
+        printCenter("\nNo complaints found for this department.\n", 4);
+    }
+    printCenter("\nPress any key to return to filters...", 7);
+    _getch();
+}
+// ================== filter complaints by department end ==================
+
+
+// ================== view all complain (admin) function start ==================
+void view_all_complain_admin() {
+    FILE *fp = fopen("admin/all_complain.txt", "r");
+    if (fp == NULL) {
+        printCenter("No complaints found.", 4);
+        printf("\nPress any key to return...");
+        _getch();
+        return;
+    }
+
+    struct Complain complaints[500];
+    int count = 0;
+    while (fscanf(fp, "%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n\n",
+                  complaints[count].cmpID,
+                  complaints[count].studentID,
+                  complaints[count].title,
+                  complaints[count].team,
+                  complaints[count].description,
+                  complaints[count].status,
+                  complaints[count].date,
+                  complaints[count].time,
+                  complaints[count].comment,
+                  complaints[count].annonymous) != EOF) {
+        count++;
+    }
+    fclose(fp);
+
+    int filter_choice;
+    do {
+        system("cls");
+        print_project_name();
+        printCenter("All Complaints (Admin Panel)\n", 10);
+        printCenter("---------------------------------------------------\n", 9);
+
+        spacePrintAdmin();
+        printf("| %-17s | %-15s | %-30s | %-20s | %-12s | %-12s |\n",
+               "Complain ID", "Student ID", "Title", "Department", "Status", "Date");
+        spacePrintAdmin();
+        for (int i = 0; i < 125; i++) printf("-");
+        printf("\n");
+
+        for (int i = 0; i < count; i++) {
+            char shortTitle[31];
+            if (strlen(complaints[i].title) > 28) {
+                strncpy(shortTitle, complaints[i].title, 27);
+                shortTitle[27] = '.'; shortTitle[28] = '.'; shortTitle[29] = '.'; shortTitle[30] = '\0';
+            } else {
+                strcpy(shortTitle, complaints[i].title);
+            }
+
+            spacePrintAdmin();
+            printf("| %-15s | %-15s | %-30s | %-20s | ",
+                   complaints[i].cmpID,
+                   complaints[i].studentID,
+                   shortTitle,
+                   complaints[i].team);
+
+            if (strcmp(complaints[i].status, "1") == 0) { textColor(12); printf("%-12s", "Pending"); }
+            else if (strcmp(complaints[i].status, "2") == 0) { textColor(6); printf("%-12s", "In Progress"); }
+            else if (strcmp(complaints[i].status, "3") == 0) { textColor(10); printf("%-12s", "Resolved"); }
+            else { textColor(7); printf("%-12s", "Unknown"); }
+            textColor(7);
+
+            printf(" | %-12s |\n", complaints[i].date);
+        }
+
+        printCenter("\nFilter Options:\n", 11);
+        printCenter("1. Show Only Pending\n", 10);
+        printCenter("2. Show Only In Progress\n", 10);
+        printCenter("3. Show Only Resolved\n", 10);
+        printCenter("4. Show Only Anonymous\n", 10);
+        printCenter("5. Department Wise\n", 10);
+        printCenter("6. View Full Complaint Details\n", 10);
+        printCenter("0. Back\n", 10);
+        printLeft("Enter your filter choice: ", 2);
+        scanf("%d", &filter_choice);
+
+        if (filter_choice >= 1 && filter_choice <= 4) {
+            char status_filter[2] = "";
+            int filter_anon = 0;
+
+            if (filter_choice == 1) strcpy(status_filter, "1");
+            else if (filter_choice == 2) strcpy(status_filter, "2");
+            else if (filter_choice == 3) strcpy(status_filter, "3");
+            else if (filter_choice == 4) filter_anon = 1;
+
+            system("cls");
+            print_project_name();
+            if (filter_anon) printCenter("Filtered by: Anonymous Complaints\n", 11);
+            else {
+                if (strcmp(status_filter, "1") == 0) printCenter("Filtered by: Pending\n", 11);
+                else if (strcmp(status_filter, "2") == 0) printCenter("Filtered by: In Progress\n", 11);
+                else if (strcmp(status_filter, "3") == 0) printCenter("Filtered by: Resolved\n", 11);
+            }
+
+            spacePrintAdmin();
+            printf("| %-15s | %-15s | %-30s | %-20s | %-12s | %-12s |\n",
+                   "Complain ID", "Student ID", "Title", "Department", "Status", "Date");
+            spacePrintAdmin();
+            for (int i = 0; i < 120; i++) printf("-");
+            printf("\n");
+
+            int filtered = 0;
+            for (int i = 0; i < count; i++) {
+                int match = 0;
+                if (filter_anon && strcmp(complaints[i].annonymous, "y") == 0) match = 1;
+                else if (!filter_anon && strcmp(complaints[i].status, status_filter) == 0) match = 1;
+                if (match) {
+                    char shortTitle[31];
+                    if (strlen(complaints[i].title) > 28) {
+                        strncpy(shortTitle, complaints[i].title, 27);
+                        shortTitle[27] = '.'; shortTitle[28] = '.'; shortTitle[29] = '.'; shortTitle[30] = '\0';
+                    } else {
+                        strcpy(shortTitle, complaints[i].title);
+                    }
+
+                    spacePrintAdmin();
+                    printf("| %-15s | %-15s | %-30s | %-20s | ",
+                           complaints[i].cmpID,
+                           complaints[i].studentID,
+                           shortTitle,
+                           complaints[i].team);
+
+                    if (strcmp(complaints[i].status, "1") == 0) { textColor(12); printf("%-12s", "Pending"); }
+                    else if (strcmp(complaints[i].status, "2") == 0) { textColor(6); printf("%-12s", "In Progress"); }
+                    else if (strcmp(complaints[i].status, "3") == 0) { textColor(10); printf("%-12s", "Resolved"); }
+                    else { textColor(7); printf("%-12s", "Unknown"); }
+                    textColor(7);
+
+                    printf(" | %-12s |\n", complaints[i].date);
+                    filtered++;
+                }
+            }
+
+            if (filtered == 0) {
+                printCenter("\nNo complaints found for this filter.\n", 4);
+            }
+            printCenter("\nPress any key to return to filters...\n", 7);
+            _getch();
+        }
+        else if (filter_choice == 5) {
+            filter_complaints_by_department(complaints, count);
+        }
+        else if (filter_choice == 6) {
+            char cmp_id[30];
+            printLeft("\nEnter Complaint ID to view details: ", 2);
+            getchar();
+            fgets(cmp_id, sizeof(cmp_id), stdin);
+            cmp_id[strcspn(cmp_id, "\n")] = '\0';
+            show_complain_details_by_id_admin(complaints, count, cmp_id);
+        }
+
+    } while (filter_choice != 0);
+}
+// ================== view all complain (admin) function end ==================
+
+
+
+// ========== ADMIN DASHBOARD ==========
+void admin_dashboard() {
+    int choice;
+    do {
+        system("cls");
+        print_project_name();
+        printCenter("Admin Dashboard\n", 10);
+        printCenter("----------------------------------------------\n", 9);
+        printCenter("1. View All Complaints (Filter)\n", 11);
+        printCenter("2. Track Complaint by ID\n", 11);
+        printCenter("3. Add Admin\n", 11);
+        printCenter("4. Add Team User\n", 11);
+        printCenter("5. Logout\n", 11);
+        printLeft("Enter your choice: ", 2);
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                view_all_complain_admin();
+                break;
+            case 2:
+                // track_complaint_by_id();
+                break;
+            case 3:
+                // add_admin();
+                break;
+            case 4:
+                // add_team_user();
+                break;
+            case 5:
+                return; // logout
+        }
+    } while (1);
+}
+
+// admin utitily functions 
+void load_admins() {
+    admin_count = 0;
+    FILE *fp = fopen("admin/admin_login.txt", "r");
+    if (fp == NULL) {
+        printf("Admin file not found!\n");
+        return;
+    }
+    while (fscanf(fp, "%[^|]|%[^\n]\n", admins[admin_count].username, admins[admin_count].password) != EOF) {
+        admin_count++;
+    }
+    fclose(fp);
+}
+// ========== ADMIN LOGIN ==========
+void admin_login(){
+    system("cls");
+    print_project_name();
+    printCenter("Admin Login\n", 12);
+    printCenter("---------------------------------------------------\n", 9);
+    char username[30], password[30];
+
+    printLeft("Enter Username: ", 15);
+    scanf("%s", username);
+    printLeft("Enter Password: ", 15);
+    input_hidden_password(password);
+
+    load_admins();
+    for (int i = 0; i < admin_count; i++) {
+        if (strcmp(admins[i].username, username) == 0 && strcmp(admins[i].password, password) == 0) {
+            printCenter("Login successful! Redirecting to dashboard...\n", 10);
+            Sleep(3000);
+            admin_dashboard();
+            return;
+        }
+    }
+
+    printCenter("Invalid credentials! Try again...\n", 12);
+    Sleep(2000);
+}
 
 // ========== Main function start ==========
-int main()
-{
-    system("cls");
-
-    int student_logged = 0;
-    if(student_logged){
-        // ========== DEV MODE START ==========
-        
-        char test_student_id[] = "242-35-001";
-        student_dashboard(test_student_id);
-        return 0;
-        
-        // ========== DEV MODE END ==========
-    }
-    // system("cls");
+int main() {
     int choice;
-    do
-    {
-        
+    do {
         system("cls");
         print_project_name();
         printCenter("1. Student Login\n", 3);
@@ -1146,17 +1600,18 @@ int main()
 
         printf("Enter Choice: ");
         scanf("%d", &choice);
-        switch (choice)
-        {
-        case 1:
-            system("cls");
-            student_login_reg();
-            break;
 
-        default:
-            break;
+        switch (choice) {
+            case 1:
+                student_login_reg(); break;
+            case 2:
+                admin_login(); break;
         }
 
     } while (choice != 0);
+
+    return 0;
 }
+
+
 // ========== Main function start ==========
