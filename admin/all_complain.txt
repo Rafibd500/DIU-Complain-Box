@@ -64,3 +64,80 @@ Half of Lab 2 PCs not powering up before morning class.
 issue in progreess
 n
 
+CMP-19082025-0002
+242-35-210
+aa
+IT Section
+bb
+1
+19/08/2025
+01:36 AM
+N/A
+n
+
+CMP-19082025-0003
+242-35-210
+vv
+Transport Managementdd
+dd
+1
+19/08/2025
+01:40 AM
+N/A
+n
+
+CMP-19082025-0004
+242-35-210
+AAAAAAAA
+IT Section
+ZZZZZZZZZZZZ
+3
+19/08/2025
+01:42 AM
+Problem solved
+n
+
+CMP-19082025-0005
+242-35-210
+A
+Dept. Of SWE
+a
+1
+19/08/2025
+02:15 AM
+N/A
+n
+
+CMP-19082025-0006
+242-35-210
+n
+Dept. Of SWE
+n
+1
+19/08/2025
+02:15 AM
+N/A
+n
+
+CMP-19082025-0007
+242-35-210
+z
+Dept. Of SWE
+z
+1
+19/08/2025
+02:15 AM
+N/A
+n
+
+CMP-19082025-0008
+242-35-210
+anno
+Dept. Of SWE
+anno desc
+1
+19/08/2025
+02:19 AM
+N/A
+y
+

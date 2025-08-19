@@ -707,7 +707,7 @@
 0|242-35-207|Tanvir Ahmed|G|SWE|01885394102|tanvir242-35-207@diu.edu.bd|25/04/2005
 0|242-35-208|Mehzabin Haque|J|SWE|01771876560|mehzabin242-35-208@diu.edu.bd|24/09/1999
 0|242-35-209|Tanjina Sultana|G|SWE|01722016304|tanjina242-35-209@diu.edu.bd|01/03/2004
-0|242-35-210|Farzana Islam|G|SWE|01354593880|islam242-35-210@diu.edu.bd|27/02/2003
+1|242-35-210|Farzana Islam|G|SWE|01354593880|islam242-35-210@diu.edu.bd|27/02/2003
 0|242-35-211|Mehzabin Haque|I|SWE|01702704525|mehzabin242-35-211@diu.edu.bd|25/10/2004
 0|242-35-212|Tanjina Sultana|J|SWE|01761491819|sultana242-35-212@diu.edu.bd|26/05/2000
 0|242-35-213|Mim Chowdhury|H|SWE|01383518323|chowdhury242-35-213@diu.edu.bd|30/09/2001

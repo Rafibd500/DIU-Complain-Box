@@ -1,1 +1,2 @@
 aa|SWE001|bb|cc|aa|aa|dd
+bb|SWE002|bb|bbd@|bb|bb|gg
