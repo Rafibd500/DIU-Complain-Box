@@ -2338,6 +2338,7 @@ void dept_show_complaint_details(struct Complain complaints[], int count, const 
 
 
 // Update status/comment from department side (writes admin file, student file, and dept file)
+// Update status/comment from department side (writes admin file, student file, and dept file)
 void dept_update_status_and_comment(struct Complain complaints[], int count, const char dept_code[], char cmp_id[]) {
     // Find index
     int found = -1;
@@ -2346,7 +2347,6 @@ void dept_update_status_and_comment(struct Complain complaints[], int count, con
     }
     if (found == -1) { printCenter("Complaint not found.\n", 4); printCenter("Press any key to return...", 7); _getch(); return; }
 
-    // Change dialog
     system("cls");
     print_project_name();
     printCenter("Update Complaint Status & Comment (Dept)\n", 11);
@@ -2354,19 +2354,13 @@ void dept_update_status_and_comment(struct Complain complaints[], int count, con
     printf("Complaint ID    : %s\n", complaints[found].cmpID);
     printf("Title           : %s\n", complaints[found].title);
     printf("Department      : %s\n", complaints[found].team);
-    printf("Current Status  : ");
-    if      (strcmp(complaints[found].status, "1") == 0) { textColor(12); printf("Pending\n"); }
-    else if (strcmp(complaints[found].status, "2") == 0) { textColor(6);  printf("In Progress\n"); }
-    else if (strcmp(complaints[found].status, "3") == 0) { textColor(10); printf("Resolved\n"); }
-    else { textColor(7); printf("Unknown\n"); }
-    textColor(7);
+    printf("Current Status  : %s\n", complaints[found].status);
     printf("Current Comment : %s\n\n", complaints[found].comment);
 
-    // EXACTLY like your admin flow: scanf for int, then getchar() to consume '\n', then fgets()
     printf("Select New Status:\n1. Pending\n2. In Progress\n3. Resolved\nEnter choice: ");
     int status_choice; 
     scanf("%d", &status_choice);
-    getchar();  // eat newline after number entry (so the next fgets works)
+    getchar();  // eat newline
 
     if (status_choice >= 1 && status_choice <= 3) {
         sprintf(complaints[found].status, "%d", status_choice);
@@ -2378,11 +2372,12 @@ void dept_update_status_and_comment(struct Complain complaints[], int count, con
     new_comment[strcspn(new_comment, "\n")] = '\0';
     strcpy(complaints[found].comment, new_comment);
 
-    // 1) Update admin/all_complain.txt
+    // === 1) Update admin/all_complain.txt (10 fields) ===
     FILE *afp = fopen("admin/all_complain.txt", "r");
     struct Complain adminCs[500]; int ac = 0;
     if (afp) {
-        while (fscanf(afp, "%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n\n",
+        while (fscanf(afp,
+                      "%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n\n",
                       adminCs[ac].cmpID, adminCs[ac].studentID, adminCs[ac].title, adminCs[ac].team,
                       adminCs[ac].description, adminCs[ac].status, adminCs[ac].date, adminCs[ac].time,
                       adminCs[ac].comment, adminCs[ac].annonymous) != EOF) {
@@ -2408,13 +2403,14 @@ void dept_update_status_and_comment(struct Complain complaints[], int count, con
         fclose(afp);
     }
 
-    // 2) Update student's file
+    // === 2) Update student's file (9 fields, NO studentID) ===
     char stu_filename[128];
     sprintf(stu_filename, "students_complain/%s.txt", complaints[found].studentID);
     struct Complain sC[300]; int scnt = 0;
     FILE *sfp = fopen(stu_filename, "r");
     if (sfp) {
-        while (fscanf(sfp, "%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n\n",
+        while (fscanf(sfp,
+                      "%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n\n",
                       sC[scnt].cmpID, sC[scnt].title, sC[scnt].description, sC[scnt].team,
                       sC[scnt].status, sC[scnt].date, sC[scnt].time, sC[scnt].comment, sC[scnt].annonymous) != EOF) {
             scnt++; if (scnt >= 300) break;
@@ -2438,13 +2434,14 @@ void dept_update_status_and_comment(struct Complain complaints[], int count, con
         fclose(sfp);
     }
 
-    // 3) Update the department file itself
+    // === 3) Update department file (10 fields, like admin) ===
     char deptFile[128];
     sprintf(deptFile, "others_dept/complains/%s.txt", dept_code);
     struct Complain dC[500]; int dc = 0;
     FILE *dfp = fopen(deptFile, "r");
     if (dfp) {
-        while (fscanf(dfp, "%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n\n",
+        while (fscanf(dfp,
+                      "%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n%[^\n]\n\n",
                       dC[dc].cmpID, dC[dc].studentID, dC[dc].title, dC[dc].team,
                       dC[dc].description, dC[dc].status, dC[dc].date, dC[dc].time,
                       dC[dc].comment, dC[dc].annonymous) != EOF) {
@@ -2474,6 +2471,7 @@ void dept_update_status_and_comment(struct Complain complaints[], int count, con
     printCenter("Press any key to return...", 7);
     _getch();
 }
+
 
 
 void dept_track_by_id(const char *dept_code) {
