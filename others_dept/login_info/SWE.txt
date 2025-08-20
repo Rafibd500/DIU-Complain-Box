@@ -1,2 +1,4 @@
 aa|SWE001|bb|cc|aa|aa|dd
 bb|SWE002|bb|bbd@|bb|bb|gg
+Shafin|SWE003|teacher|shafin@gmail.com|912827837|shafin|vmdclk
+Rahim|SWE001|Office Coordinator|rahim@gmail.com|01938389923|rahim|wdmlh
