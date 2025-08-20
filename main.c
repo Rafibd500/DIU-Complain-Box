@@ -743,8 +743,8 @@ void submit_new_complain(char id[]){
     printCenter("03. Dept. Of CSE    \n", 11);
     printCenter("04. Dept. Of SWE    \n", 11);
     printCenter("05. BLC Support Team\n", 11);
-    printCenter("          6. Finance and Accounts Team\n", 11);
-    printCenter("          7. Transport Management Team\n", 11);
+    printCenter("          06. Finance and Accounts Team\n", 11);
+    printCenter("          07. Transport Management Team\n", 11);
     printCenter("0. Back\n", 11);
 
     printf("Enter Choice: ");
@@ -2664,32 +2664,34 @@ void department_login(const char *dept_code) {
     }
 }
 
-
-
+void spacePrint1(){
+    int width = getConsoleWidth();
+    for(int i=0; i<width/4; i++) printf(" ");
+}
 
 // ========== Main function start ==========
 int main() {
     int choice;
-    puts(".----------------.  .----------------.  .----------------.  .----------------.  .----------------. ");
-    puts("| .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |");
-    puts("| |  ________    | || |     _____    | || | _____  _____ | || |     ______   | || |   ______     | |");
-    puts("| | |_   ___ `.  | || |    |_   _|   | || ||_   _||_   _|| || |   .' ___  |  | || |  |_   _ \\    | |");
-    puts("| |   | |   `. \\ | || |      | |     | || |  | |    | |  | || |  / .'   \\_|  | || |    | |_) |   | |");
-    puts("| |   | |    | | | || |      | |     | || |  | '    ' |  | || |  | |         | || |    |  __'.   | |");
-    puts("| |  _| |___.' / | || |     _| |_    | || |   \\ `--' /   | || |  \\ `.___.'\\  | || |   _| |__) |  | |");
-    puts("| | |________.'  | || |    |_____|   | || |    `.__.'    | || |   `._____.'  | || |  |_______/   | |");
-    puts("| |              | || |              | || |              | || |              | || |              | |");
-    puts("| '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |");
-    puts(" '----------------'  '----------------'  '----------------'  '----------------'  '----------------' ");
-    Sleep(4000);
+    // Sleep(4000);
     do {
         system("cls");
         print_project_name();
-
+        
+        spacePrint1(); puts(".----------------.  .----------------.  .----------------.  .----------------.  .----------------. ");
+        spacePrint1(); puts("| .--------------. || .--------------. || .--------------. || .--------------. || .--------------. |");
+        spacePrint1();puts("| |  ________    | || |     _____    | || | _____  _____ | || |     ______   | || |   ______     | |");
+        spacePrint1();puts("| | |_   ___ `.  | || |    |_   _|   | || ||_   _||_   _|| || |   .' ___  |  | || |  |_   _ \\    | |");
+        spacePrint1();puts("| |   | |   `. \\ | || |      | |     | || |  | |    | |  | || |  / .'   \\_|  | || |    | |_) |   | |");
+        spacePrint1();puts("| |   | |    | | | || |      | |     | || |  | '    ' |  | || |  | |         | || |    |  __'.   | |");
+        spacePrint1();puts("| |  _| |___.' / | || |     _| |_    | || |   \\ `--' /   | || |  \\ `.___.'\\  | || |   _| |__) |  | |");
+        spacePrint1();puts("| | |________.'  | || |    |_____|   | || |    `.__.'    | || |   `._____.'  | || |  |_______/   | |");
+        spacePrint1();puts("| |              | || |              | || |              | || |              | || |              | |");
+        spacePrint1();puts("| '--------------' || '--------------' || '--------------' || '--------------' || '--------------' |");
+        spacePrint1();puts(" '----------------'  '----------------'  '----------------'  '----------------'  '----------------' ");
         printCenter(" 1. Student Login\n", 3);
-        printCenter(" 2. Admin Login\n", 4);
-        printCenter(" 3. Other Department Login\n", 6);
-        printCenter(" 0. EXIT...\n", 9);
+        printCenter(" 2. Admin Login\n", 3);
+        printCenter(" 3. Other Department Login\n", 3);
+        printCenter(" 0. EXIT...\n", 4);
 
         textColor(14);
         printf("\nEnter Choice: ");

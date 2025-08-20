@@ -1,8 +1,7 @@
 CMP-20082025-0001
-242-35-115
 Projector Not Working
-IT Section
 Projector not work properly in Room No - 107(AB3). Please fix the projector. We have a presentation in tomorrow.
+IT Section
 1
 20/08/2025
 12:58 AM
@@ -10,10 +9,9 @@ N/A
 n
 
 CMP-21082025-0002
-242-35-115
 Hall Light Problem
-Hall Authority
 Lights in Hall No - 2 are not working, students face issues at night.
+Hall Authority
 2
 21/08/2025
 09:14 PM
@@ -21,32 +19,49 @@ Electrician assigned, work in progress.
 n
 
 CMP-18082025-0003
-242-35-115
 WiFi Issue in Lab
-Dept. Of CSE
 Internet connection not stable in Lab-3 (AB5).
+Dept. Of CSE
 1
 18/08/2025
 02:50 PM
 N/A
 n
 
+CMP-20082025-0004
+Bus Delay Problem
+ Team
+Transport Management Team
+3
+20/08/2025
+07:25 AM
+Route rescheduled, problem fixed.
+y
+
 CMP-22082025-0005
-242-35-115
 Lab Computer Not Starting
-Dept. Of SWE
 Several computers in SWE Lab-1 are not turning on.
+Dept. Of SWE
 3
 22/08/2025
 11:45 AM
 We have resolve the issue.
 n
 
+CMP-17082025-0006
+Tuition Fee Mismatch
+ Team
+Finance and Accounts Team
+1
+17/08/2025
+04:05 PM
+N/A
+y
+
 CMP-23082025-0007
-242-35-115
 Library WiFi Slow
-BLC Support Team
 WiFi speed in the central library is very poor.
+BLC Support Team
 3
 23/08/2025
 12:20 PM
@@ -54,10 +69,9 @@ Issue resolved, router upgraded.
 n
 
 CMP-20082025-0008
-242-35-115
 Broken Chairs in Hall
-Hall Authority
 Several chairs in Hall-1 common room are broken.
+Hall Authority
 1
 20/08/2025
 08:15 PM
@@ -65,10 +79,9 @@ N/A
 y
 
 CMP-21082025-0009
-242-35-115
 Projector Remote Missing
-IT Section
 Remote control of projector in AB2 Room-209 is missing.
+IT Section
 2
 21/08/2025
 01:42 PM
@@ -76,10 +89,9 @@ Replacement ordered.
 n
 
 CMP-20082025-0002
-242-35-115
 Title
-Dept. Of SWE
 Description
+Dept. Of SWE
 1
 20/08/2025
 07:42 AM
