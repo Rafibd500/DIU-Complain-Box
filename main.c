@@ -6,11 +6,19 @@
 #include <conio.h>
 #include <time.h>
 
-#define MAX_COMPLAIN 5000
+#define MAX_COMPLAIN 500
 
 
 
 int annonymous=0;
+char current_logged_student[15]; //current logged student id
+int student_cnt;
+int registered_students = 0;
+int admin_count = 0;
+char current_logged_dept_code[10] = "";
+char current_logged_dept_user[30] = "";     // username of dept user
+char current_logged_admin[30];
+
 struct Student{
     char log_status[2];
     char id[15];
@@ -21,16 +29,11 @@ struct Student{
     char email[50];
     char dob[15];
 };
-struct Student students_data[3000];
-char current_logged_student[15]; //current logged student id
+
 struct Login_info{
     char id[15];
     char password[20];
 };
-struct Login_info students_login_info[3000];
-
-int student_cnt;
-int registered_students = 0;
 
 
 // structure for complain 
@@ -46,11 +49,6 @@ struct Complain{
     char comment[100];
     char annonymous[5];
 };
-
-struct Complain all_complains[MAX_COMPLAIN];
-
-
-
 struct Admin {
     char name[50];
     char adminID[20];
@@ -59,20 +57,18 @@ struct Admin {
     char username[30];
     char password[30];
 };
-char current_logged_admin[30];
+
+// Structure Array 
 struct Admin admins[100];
-int admin_count = 0;
-
-char current_logged_dept_code[10] = "";     // e.g., "CSE"
-char current_logged_dept_user[30] = "";     // username of dept user
+struct Complain all_complains[MAX_COMPLAIN];
+struct Login_info students_login_info[3000];
+struct Student students_data[3000];
 
 
 
 
 // ======= Function call =======
-// ======= Function call =======
-
-// console / printing
+/* ========= Console / printing ========= */
 void textColor(int colorCode);
 int  getConsoleWidth(void);
 int  fetchConsoleWidth(void);
@@ -81,13 +77,14 @@ void printCenterCustom(const char *text, int color);
 void printLeft(const char *text, int color);
 void print_project_name(void);
 
-// student
+/* ========= Student data & auth ========= */
 void student_login_reg(void);
 void student_registration(void);
 void student_login(void);
 void append_id_password(char id[], char password[]);
 void password_encrypt(char *password);
 void password_decrypt(char *password);
+void input_hidden_password(char password[]);
 void load_students_data(void);
 void upload_students_data(void);
 void load_logged_student_data(void);
@@ -96,7 +93,7 @@ int  binary_search_on_students_data(char id[]);
 int  binary_search_on_students_login(char id[]);
 void sort_student_login_info(void);
 
-// student dashboard
+/* ========= Student dashboard & flows ========= */
 void student_dashboard(char id[]);
 void submit_new_complain(char id[]);
 void view_all_complain(char id[]);
@@ -105,31 +102,51 @@ void track_complain_by_complainID(char id[]);
 void my_profile(char id[]);
 void student_logout(char id[]);
 
-// complaint creation
-void take_complain(char id[], int choice);
-char* generate_complain_ID(void);
+/* ========= Complaint creation ========= */
+void   take_complain(char id[], int choice);
+char * generate_complain_ID(void);
 
-// admin
-void admin_dashboard(void);
-void admin_login(void);
+/* ========= Helpers (spacing/table) ========= */
+void spacePrint(void);
+void spacePrintProfile(void);
+void spacePrintAdmin(void);
+void spacePrint1(void);
+
+/* ========= Student-side complaint viewing ========= */
+void show_complain_details_by_id(struct Complain complaints[], int count, char cmp_id[]);
+
+/* ========= Admin panel ========= */
 void view_all_complain_admin(void);
 void view_complaint_by_id_admin(void);
 void create_admin_account(void);
 void create_department_user(void);
 void admin_logout(void);
+void admin_dashboard(void);
+void load_admins(void);
+void admin_login(void);
 void view_student_details_with_id(void);
 
-// dept helpers
+/* Admin: view/update a single complaint */
+void show_complain_details_by_id_admin(struct Complain complaints[], int count, char cmp_id[]);
+void update_complaint_status_and_comment(struct Complain complaints[], int count, char cmp_id[]);
+
+/* Admin: filtering */
+void filter_complaints_by_department(struct Complain complaints[], int count);
+
+/* ========= Department (others_dept) ========= */
+void department_login(const char *dept_code);
 void department_dashboard(const char *dept_code);
+void department_logout(void);
+
 const char* deptCode_to_full(const char *code);
+void dept_show_table_header(int showStudentCol);
 void dept_view_all_complaints(const char *dept_code);
 void dept_show_complaint_details(struct Complain complaints[], int count, const char *dept_code, char cmp_id[]);
-void dept_update_status_and_comment(struct Complain complaints[], int count, const char *dept_code, char cmp_id[]);
+void dept_update_status_and_comment(struct Complain complaints[], int count, const char dept_code[], char cmp_id[]);
 void dept_track_by_id(const char *dept_code);
 void dept_add_team_user(const char *dept_code);
 void dept_view_student_profile_with_id(void);
-void department_logout(void);
-void department_login(const char *dept_code);
+
 
 
 
